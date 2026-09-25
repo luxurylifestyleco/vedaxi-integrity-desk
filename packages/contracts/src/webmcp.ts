@@ -7,6 +7,53 @@ export type WebMcpUiStatus = "checking" | "active" | "disabled" | "unsupported" 
 export type WebMcpTool = ModelContextTool;
 export type ModelContextRegisterToolOptions = globalThis.ModelContextRegisterToolOptions;
 
+export interface ElasticCapabilityContract {
+  id: string;
+  name: string;
+  description: string;
+  domain: string;
+  inputs: Record<string, unknown>;
+  outputs: Record<string, unknown>;
+  permissions: string[];
+  provider: string;
+  protocol: string;
+  endpoint?: string | null;
+  metadata?: Record<string, unknown>;
+}
+
+function asObjectSchema(fields: Record<string, unknown>): Record<string, unknown> {
+  if (fields.type === "object" && fields.properties) return fields;
+
+  const properties = Object.fromEntries(
+    Object.entries(fields).map(([name, value]) => [
+      name,
+      typeof value === "string" ? { type: value } : value
+    ])
+  );
+  return { type: "object", properties, additionalProperties: false };
+}
+
+export function projectElasticCapabilityToWebMcp(
+  capability: ElasticCapabilityContract,
+  execute: (
+    capability: ElasticCapabilityContract,
+    input: Record<string, unknown>
+  ) => Promise<unknown> | unknown,
+  annotations?: ModelContextTool["annotations"]
+): WebMcpTool {
+  return {
+    name: capability.id,
+    title: capability.name,
+    description: capability.description,
+    inputSchema: asObjectSchema(capability.inputs),
+    outputSchema: asObjectSchema(capability.outputs),
+    annotations: annotations ?? {
+      readOnlyHint: !capability.permissions.some((permission) => permission.endsWith(":write"))
+    },
+    execute: (input) => execute(capability, input)
+  };
+}
+
 export interface WebMcpRegistrationOptions {
   lifecycleSignal?: AbortSignal;
 }

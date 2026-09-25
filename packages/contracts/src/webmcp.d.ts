@@ -6,6 +6,7 @@ declare global {
     description: string;
     title?: string;
     inputSchema?: Record<string, unknown>;
+    outputSchema?: Record<string, unknown>;
     annotations?: {
       readOnlyHint?: boolean;
       untrustedContentHint?: boolean;

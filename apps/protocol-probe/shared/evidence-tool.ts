@@ -1,4 +1,10 @@
-import { searchEvidence, type EvidenceObject, type WebMcpTool } from "@vedaxi/contracts";
+import {
+  projectElasticCapabilityToWebMcp,
+  searchEvidence,
+  type ElasticCapabilityContract,
+  type EvidenceObject,
+  type WebMcpTool
+} from "@vedaxi/contracts";
 
 const MAX_QUERY_LENGTH = 160;
 
@@ -30,17 +36,27 @@ export function createReadOnlyEvidenceTool(
   description: string,
   evidence: EvidenceObject
 ): WebMcpTool {
-  return {
-    name,
-    title,
+  const capability: ElasticCapabilityContract = {
+    id: name,
+    name: title,
     description,
-    inputSchema: {
+    domain: "evidence",
+    inputs: {
       type: "object",
       properties: { query: { type: "string", maxLength: MAX_QUERY_LENGTH, pattern: "\\S" } },
       required: ["query"],
       additionalProperties: false
     },
-    annotations: { readOnlyHint: true, untrustedContentHint: true },
-    execute: async (input) => searchEvidence(validateQuery(input), [evidence])
+    outputs: { type: "object", properties: { results: { type: "array" } } },
+    permissions: ["evidence:read"],
+    provider: evidence.sourceOrigin,
+    protocol: "webmcp",
+    endpoint: evidence.locator,
+    metadata: { provenance: evidence.provenance }
   };
+  return projectElasticCapabilityToWebMcp(
+    capability,
+    async (_capability, input) => searchEvidence(validateQuery(input), [evidence]),
+    { readOnlyHint: true, untrustedContentHint: true }
+  );
 }

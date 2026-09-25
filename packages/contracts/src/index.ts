@@ -1,8 +1,9 @@
 export { searchEvidence } from "./evidence";
 export type { EvidenceObject, EvidenceSearchResult } from "./evidence";
 
-export { registerWebMcpTools } from "./webmcp";
+export { projectElasticCapabilityToWebMcp, registerWebMcpTools } from "./webmcp";
 export type {
+  ElasticCapabilityContract,
   ModelContextRegisterToolOptions,
   WebMcpRegistration,
   WebMcpRegistrationOptions,

@@ -1,7 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
+  projectElasticCapabilityToWebMcp,
   registerWebMcpTools,
+  type ElasticCapabilityContract,
   type WebMcpTool
 } from "./webmcp";
 import { FakeModelContext } from "./webmcp-test-harness";
@@ -29,6 +31,38 @@ afterEach(() => {
 });
 
 describe("registerWebMcpTools", () => {
+  it("projects one canonical Elastic capability into a native WebMCP tool", async () => {
+    const capability: ElasticCapabilityContract = {
+      id: "search_products",
+      name: "Search Products",
+      description: "Search the catalog.",
+      domain: "commerce",
+      inputs: { query: "string" },
+      outputs: { items: "array" },
+      permissions: ["catalog:read"],
+      provider: "shop",
+      protocol: "rest",
+      endpoint: "/products/search",
+      metadata: { provenance: "public-catalog" }
+    };
+    const observed: Array<{ capability: ElasticCapabilityContract; input: Record<string, unknown> }> = [];
+    const tool = projectElasticCapabilityToWebMcp(capability, (selected, input) => {
+      observed.push({ capability: selected, input });
+      return { items: [] };
+    });
+
+    expect(tool).toMatchObject({
+      name: "search_products",
+      title: "Search Products",
+      description: "Search the catalog.",
+      inputSchema: { type: "object", properties: { query: { type: "string" } } },
+      outputSchema: { type: "object", properties: { items: { type: "array" } } },
+      annotations: { readOnlyHint: true }
+    });
+    expect(await tool.execute({ query: "shoes" })).toEqual({ items: [] });
+    expect(observed).toEqual([{ capability, input: { query: "shoes" } }]);
+  });
+
   it("aborts a pending native registration immediately when its lifecycle signal aborts", async () => {
     const registrationPromise = deferred<void>();
     const signals: AbortSignal[] = [];
