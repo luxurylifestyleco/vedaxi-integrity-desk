@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "mode": "gated-sequential",
+  "source": "SDLC training technical content; promotional content excluded",
+  "stages": [
+    {
+      "skill": "01-context",
+      "output": "context.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "02-requirements",
+      "output": "requirements.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "03-plan",
+      "output": "plan.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "04-implement",
+      "output": "implementation.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "05-test",
+      "output": "test-results.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "06-review",
+      "output": "review.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "07-stage",
+      "output": "staging.json",
+      "requires_status": "passed"
+    },
+    {
+      "skill": "08-release",
+      "output": "release.json",
+      "requires_status": "passed"
+    }
+  ],
+  "policies": {
+    "no_secrets_in_prompts": true,
+    "least_privilege": true,
+    "human_review_required": true,
+    "production_approval_required": true,
+    "no_review_bypass": true,
+    "real_execution_evidence_required": true,
+    "max_debug_attempts": 3,
+    "stop_on_failure": true
+  }
+}

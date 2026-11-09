@@ -14,16 +14,16 @@ Public GitHub: [luxurylifestyleco/vedaxi-elastic-web](https://github.com/luxuryl
 | Shared state | `@vedaxi/state` `PublisherStore.dispatch` is the only mutation boundary. Confirm/reject/reset persist through that API. |
 | M0 | Recorded `PASS`. |
 | M1–M4 | Local testing is finished (Paper, Video/MP4+VTT, shared actions, stage). Registry JSON still has no recorded module `PASS` except M0; that is not “work unstarted.” |
-| Remaining | Public webpage on **Vercel**. **Vercel live URL: (to be provided)** |
+| Remaining | Human release gates only; public production URLs are listed below. |
 | CI | GitHub Actions Ubuntu job installs FFmpeg, then `node evals/run-quality-gate.mjs --clean-install`. |
 
-Local testing of Paper, Video, shared state, and the M2 media slot is finished. The remaining product gap is the **webpage that will be hosted on Vercel**. Do not treat a local preview as the public judge URL.
+Local testing of Paper, Video, shared state, and the M2 media slot is finished. Public deployments are listed below; repository release status remains fail-closed until its recorded gates pass.
 
 `.devpost-hackathon-state.json` stays `rules_acknowledged: false` until the project owner acknowledges the rules.
 
-## Public hosting (Vercel)
+## Configured public hosting (repository verification pending)
 
-The live production deployments are verified, aliased, and accessible:
+These deployment URLs are configured, but the repository governance records have not yet accepted the required public-browser evidence:
 
 | Surface | Live Production URL | Description |
 | :--- | :--- | :--- |

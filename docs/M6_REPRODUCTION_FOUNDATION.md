@@ -70,8 +70,8 @@ That fact is not a legal originality determination and does not answer the Devpo
 ## Dependency, media, and provenance status
 
 - Dependency metadata has been inventoried, but final license-text and obligation review is pending.
-- No root project license has been selected; that is a human decision.
-- Controlled MP4/VTT media is missing, and its manifest still requires creator, license, rights, hash, and recording provenance.
+- The root project license is MIT; final dependency license-text and obligation review remains pending.
+- Controlled MP4/VTT media and hash-verified manifest are present; creator, license, rights, and recording provenance still require final review in the rights ledger.
 - Screenshot privacy/rights, fixture authorship, product/third-party marks, final AI-tool disclosure, and overall ownership remain pending.
 - Public deployment, public repository access, logged-out video access, and judging-period availability remain unverified.
 

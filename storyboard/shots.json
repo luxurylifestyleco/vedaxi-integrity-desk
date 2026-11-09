@@ -1,0 +1,334 @@
+{
+  "groups": [
+    [
+      "The original promise",
+      "We built technology to set ourselves free. Then came software. Applications. Dashboards. Workflows. Integrations. We kept building more powerful tools. And somehow, we became the ones doing more work.",
+      "Mechanical startup. Restrained electronic tension."
+    ],
+    [
+      "The work between tools",
+      "Somewhere along the way, we forgot why we built it all. Getting something done shouldn't mean coordinating every tool ourselves. We should simply tell it what we want.",
+      "Notifications accumulate, then cut to silence."
+    ],
+    [
+      "Intent becomes a path",
+      "Express your intent. Let the internet coordinate the work. Not another tool to operate. A whole new way for the internet to work.",
+      "Silence at freeze. A coherent discovery motif enters."
+    ],
+    [
+      "Independent agents discover value",
+      "Her agent represents her requirements and preferences. The retailer’s agent represents what the business can actually offer—its stock, prices, promotions and fulfilment options. Neither agent controls the other. Each works within the permissions and interests it has been given.",
+      "Measured discovery; small interface cues."
+    ],
+    [
+      "A real negotiation",
+      "The agents can do more than pass messages. They can discover options neither side had considered, test them against real constraints and negotiate a better fit—without either side giving up control.",
+      "Restrained rhythmic momentum; no agent speech."
+    ],
+    [
+      "The customer stays in control",
+      "Before anything is committed, she sees the complete offer and approves it. If she chooses financing, the financing provider assesses eligibility independently and returns terms for her to review. Her private financial information doesn’t become the retailer’s property. Consent stays with the customer.",
+      "Music lowers; approval is deliberate and clear."
+    ],
+    [
+      "The work gets done",
+      "Once she approves, the work moves. The order is placed, stock is reserved and delivery is coordinated. And for the business, the same model turns disconnected operational tasks into coordinated execution. The owner sets the objective and the boundaries. The system handles the authorised work.",
+      "Optimistic lift, practical packing and delivery sounds."
+    ],
+    [
+      "Beyond one transaction",
+      "And these are only two examples. As more providers expose useful capabilities, more agents can coordinate across them. Every new capability can make the network more useful. Every successful path can make the next outcome easier to achieve. The next internet won’t just connect applications. It will connect capabilities, agents and outcomes. Elastic Web. The Agent-Native Internet.",
+      "Cinematic resolution and restrained sonic signature."
+    ]
+  ],
+  "shots": [
+    {
+      "id": "01",
+      "sequence": 1,
+      "title": "Modern screen wakes",
+      "visual": "boot",
+      "purpose": "Establish the promise in the present day.",
+      "action": "Black to modern screen illumination. Locked close insert; no ancient computer.",
+      "overlay": "We built technology to set ourselves free."
+    },
+    {
+      "id": "02",
+      "sequence": 1,
+      "title": "Tools multiply",
+      "visual": "tools",
+      "purpose": "Show increasing tool power and coordination burden.",
+      "action": "Modern windows multiply through controlled 2D animation. No historical montage.",
+      "overlay": "Applications · Dashboards · Workflows · Integrations"
+    },
+    {
+      "id": "03",
+      "sequence": 1,
+      "title": "A new job",
+      "visual": "woman",
+      "purpose": "Give the customer a concrete goal and deadline.",
+      "action": "Medium reaction, then over-shoulder email insert.",
+      "overlay": "Job offer · Product Operations Associate · Starts next Monday · 16 GB minimum"
+    },
+    {
+      "id": "04",
+      "sequence": 1,
+      "title": "A growing business",
+      "visual": "man",
+      "purpose": "Introduce the other owner and a different goal.",
+      "action": "Medium office shot, then seller-system insert.",
+      "overlay": "Orders · Enquiries · Fulfilment"
+    },
+    {
+      "id": "05",
+      "sequence": 2,
+      "title": "The customer compares",
+      "visual": "compare",
+      "purpose": "Show that specifications, budget and delivery are disconnected.",
+      "action": "Straight-on controlled product comparison; intercut with customer.",
+      "overlay": "$749 / 8 GB: below requirement · $1,249 / 16 GB: over budget · $999 / 16 GB: separate comparison SKU"
+    },
+    {
+      "id": "06",
+      "sequence": 2,
+      "title": "The owner switches systems",
+      "visual": "man",
+      "purpose": "Show the businessman acting as the integration layer.",
+      "action": "Gaze switches between laptop and monitor; use readable screen inserts.",
+      "overlay": "Marketplace → Advertising → Social"
+    },
+    {
+      "id": "07",
+      "sequence": 2,
+      "title": "Information gets copied",
+      "visual": "tools",
+      "purpose": "Make manual coordination visible.",
+      "action": "Close UI insert of a lead copied into CRM and stock checked separately.",
+      "overlay": "CRM · Inventory · Support"
+    },
+    {
+      "id": "08",
+      "sequence": 2,
+      "title": "Notifications accumulate",
+      "visual": "fragment",
+      "purpose": "Bring both stories to the same bottleneck.",
+      "action": "Parallel split-screen; disconnected panels fill the composition, then freeze.",
+      "overlay": "Different goals. The same bottleneck."
+    },
+    {
+      "id": "09",
+      "sequence": 3,
+      "title": "Express your intent",
+      "visual": "intent",
+      "purpose": "Turn the film from friction to coordinated work.",
+      "action": "Frozen panels; silence; one clean request appears in VDX.",
+      "overlay": "At least 16 GB · Around $1,000 · Before Monday · Financing if eligible"
+    },
+    {
+      "id": "10",
+      "sequence": 3,
+      "title": "Applications expose capabilities",
+      "visual": "network",
+      "purpose": "Explain the mechanism without internal architecture.",
+      "action": "Windows reveal useful capabilities; champagne paths connect them.",
+      "overlay": "Catalogue · Inventory · Pricing · Delivery · Finance · Payment · Support"
+    },
+    {
+      "id": "11",
+      "sequence": 3,
+      "title": "A path takes shape",
+      "visual": "flow",
+      "purpose": "Show discovery, composition and execution as one fluid path.",
+      "action": "Controlled camera glide across a coherent graphic, no giant dashboard.",
+      "overlay": "Intent → Understanding → Discovery → Composition → Coordination → Execution → Outcome"
+    },
+    {
+      "id": "12",
+      "sequence": 3,
+      "title": "Pip appears virtually",
+      "visual": "pip",
+      "purpose": "Tie the customer agent to her intent and owner.",
+      "action": "Pink signal resolves into Pip inside the customer window.",
+      "overlay": "Customer agent · Her requirements and permissions"
+    },
+    {
+      "id": "13",
+      "sequence": 3,
+      "title": "Atlas appears virtually",
+      "visual": "atlas",
+      "purpose": "Tie the business agent to authorised commercial capabilities.",
+      "action": "Blue signal resolves into Atlas attached to inventory window.",
+      "overlay": "Retailer agent · Stock, margin and fulfilment rules"
+    },
+    {
+      "id": "14",
+      "sequence": 3,
+      "title": "A reusable recipe",
+      "visual": "recipe",
+      "purpose": "Show why successful coordination can be reused.",
+      "action": "A capability route is saved; a second intent adapts it.",
+      "overlay": "Reuse a successful path · Adapt providers and constraints"
+    },
+    {
+      "id": "15",
+      "sequence": 4,
+      "title": "The request is understood",
+      "visual": "pip",
+      "purpose": "Make budget, deadline and specifications explicit.",
+      "action": "Small ear perk and head tilt; requirement tiles stay fixed.",
+      "overlay": "Requirements understood. Budget and delivery are non-negotiable."
+    },
+    {
+      "id": "16",
+      "sequence": 4,
+      "title": "Pip rejects the obvious option",
+      "visual": "compare",
+      "purpose": "Demonstrate independent evaluation, not automatic agreement.",
+      "action": "Pip raises eyebrow; over-budget offer is flagged.",
+      "overlay": "Preferred model · 16 GB · $1,249 · Over budget"
+    },
+    {
+      "id": "17",
+      "sequence": 4,
+      "title": "Atlas finds suitable stock",
+      "visual": "atlas",
+      "purpose": "Explain the retailer incentive for a better offer.",
+      "action": "Eyes scan inventory; one deliberate claw gesture.",
+      "overlay": "Alternative model · 32 GB · In stock · Slow-moving inventory"
+    },
+    {
+      "id": "18",
+      "sequence": 5,
+      "title": "The first offer",
+      "visual": "agents",
+      "purpose": "Show a concrete mutually useful proposal.",
+      "action": "Card travels between separate windows; agents keep equal prominence.",
+      "overlay": "32 GB · $999 · Bag · Extended warranty · Express delivery"
+    },
+    {
+      "id": "19",
+      "sequence": 5,
+      "title": "Pip counters",
+      "visual": "agents",
+      "purpose": "Make negotiation and conflicting interests visible.",
+      "action": "Pip gestures toward terms; Atlas pauses.",
+      "overlay": "That meets the specs. But show me the full value. → Can you include delivery before Monday?"
+    },
+    {
+      "id": "20",
+      "sequence": 5,
+      "title": "Atlas checks constraints",
+      "visual": "atlas",
+      "purpose": "Show a commercially grounded answer.",
+      "action": "Inventory/margin/fulfilment indicators checked; restrained nod.",
+      "overlay": "Margin protected · Delivery window checked"
+    },
+    {
+      "id": "21",
+      "sequence": 5,
+      "title": "A revised offer",
+      "visual": "agents",
+      "purpose": "Reach a proposal without committing the customer.",
+      "action": "Atlas nods; Pip looks back toward customer message area.",
+      "overlay": "Confirmed within the available fulfilment window. → That works. I’ll ask the customer to approve."
+    },
+    {
+      "id": "22",
+      "sequence": 6,
+      "title": "The whole offer is readable",
+      "visual": "review",
+      "purpose": "Make informed consent possible.",
+      "action": "Clean full-screen summary; hold for comprehension.",
+      "overlay": "32 GB · $999 · Bag · Extended warranty · Before Monday · Review offer"
+    },
+    {
+      "id": "23",
+      "sequence": 6,
+      "title": "Financing is a separate choice",
+      "visual": "finance",
+      "purpose": "Preserve privacy, independent eligibility and optional terms.",
+      "action": "Separate provider window; terms return for customer review.",
+      "overlay": "Check eligibility → Review actual terms → Choose whether to authorise"
+    },
+    {
+      "id": "24",
+      "sequence": 6,
+      "title": "The customer approves",
+      "visual": "approval",
+      "purpose": "Show a deliberate human decision before execution.",
+      "action": "Read first, then a single tap. Screen insert must establish what was approved.",
+      "overlay": "Approve purchase · Authorise payment / chosen financing"
+    },
+    {
+      "id": "25",
+      "sequence": 7,
+      "title": "Execution follows consent",
+      "visual": "execute",
+      "purpose": "Demonstrate action beyond another checklist.",
+      "action": "Controlled status transitions only after approval.",
+      "overlay": "Order authorised → Stock reserved → Fulfilment started → Tracking"
+    },
+    {
+      "id": "26",
+      "sequence": 7,
+      "title": "Packing the order",
+      "visual": "packing",
+      "purpose": "Make the coordinated outcome tangible.",
+      "action": "Close static packing shot, tissue folds around laptop.",
+      "overlay": "No added copy required"
+    },
+    {
+      "id": "27",
+      "sequence": 7,
+      "title": "Ready for the new job",
+      "visual": "arrival",
+      "purpose": "Pay off the customer story.",
+      "action": "She opens the delivered laptop; restrained relief.",
+      "overlay": "Delivered before her start date"
+    },
+    {
+      "id": "28",
+      "sequence": 7,
+      "title": "The business sets boundaries",
+      "visual": "objective",
+      "purpose": "Show the second use case beyond the laptop purchase.",
+      "action": "Owner gives one goal; independent capabilities coordinate work.",
+      "overlay": "Move slow-moving stock · Protect margin · Ask for approval on exceptions"
+    },
+    {
+      "id": "29",
+      "sequence": 7,
+      "title": "Time returned to the owner",
+      "visual": "outdoor",
+      "purpose": "Pay off the promise of freedom.",
+      "action": "Quiet terrace moment, relaxed posture, no screen return.",
+      "overlay": "No dashboard. A human outcome."
+    },
+    {
+      "id": "30",
+      "sequence": 8,
+      "title": "The network grows",
+      "visual": "network",
+      "purpose": "Establish infrastructure beyond shopping.",
+      "action": "Pull back into independent providers and abstract other agents.",
+      "overlay": "Commerce · Logistics · Finance · Travel · Productivity · Support"
+    },
+    {
+      "id": "31",
+      "sequence": 8,
+      "title": "Paths can be reused",
+      "visual": "recipe",
+      "purpose": "Explain compounding value without invented metrics.",
+      "action": "A successful route adapts to another intent and providers.",
+      "overlay": "Every useful capability enables more possible paths"
+    },
+    {
+      "id": "32",
+      "sequence": 8,
+      "title": "Brand resolution",
+      "visual": "end",
+      "purpose": "Land the product and thesis.",
+      "action": "Graphite end card; exact approved arrow and actual fonts at final compositing.",
+      "overlay": "ELASTIC WEB BY VEDAXI · THE AGENT-NATIVE INTERNET"
+    }
+  ]
+}

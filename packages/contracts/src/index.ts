@@ -11,3 +11,11 @@ export type {
   WebMcpTool,
   WebMcpUiStatus
 } from "./webmcp";
+
+export type {
+  ContextFactSource,
+  ContextEvidenceRef,
+  ContextFact,
+  ContextPacket,
+  WorkflowStepResult
+} from "./context";

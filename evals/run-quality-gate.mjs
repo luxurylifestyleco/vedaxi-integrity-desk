@@ -8,12 +8,12 @@ const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const npm = "npm";
 const cleanInstall = process.argv.includes("--clean-install");
 
-function run(label, command, args, cwd = repoRoot) {
+function run(label, command, args, cwd = repoRoot, env = process.env) {
   console.log(`\n==> ${label}`);
   const windowsNpm = process.platform === "win32" && command === npm;
   const executable = windowsNpm ? (process.env.ComSpec ?? "cmd.exe") : command;
   const executableArgs = windowsNpm ? ["/d", "/s", "/c", [npm, ...args].join(" ")] : args;
-  const result = spawnSync(executable, executableArgs, { cwd, stdio: "inherit" });
+  const result = spawnSync(executable, executableArgs, { cwd, env, stdio: "inherit" });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${label} failed with exit code ${result.status}`);
 }
@@ -26,6 +26,12 @@ function hardQualityExit(status, result) {
   throw new Error(`Inconsistent hard-quality result with exit code ${status}`);
 }
 
+function releaseClaimsExit(status, result) {
+  if (status === 0 && result.passed === true && result.deterministic_veto === false) return 0;
+  if (status === 1 && result.passed === false && result.deterministic_veto === true) return 1;
+  throw new Error(`Inconsistent release-claims result with exit code ${status}`);
+}
+
 function mediaExit(status, output) {
   if (status === 0 && /^PASS:/m.test(output)) return 0;
   if (status === 2 && /^BLOCKED:/m.test(output)) return 2;
@@ -36,18 +42,23 @@ if (process.argv.includes("--self-test")) {
   const humanHeld = { decision: "HOLD", release_action: "NONE", release_authority: "HUMAN_REQUIRED" };
   assert.equal(hardQualityExit(1, { ...humanHeld, passed: false, gate_status: "FAIL", eligible_for_human_gate: false }), 1);
   assert.equal(hardQualityExit(0, { ...humanHeld, passed: true, gate_status: "PASS", eligible_for_human_gate: true }), 0);
+  assert.equal(releaseClaimsExit(1, { passed: false, deterministic_veto: true }), 1);
+  assert.equal(releaseClaimsExit(0, { passed: true, deterministic_veto: false }), 0);
+  assert.throws(() => releaseClaimsExit(0, { passed: false, deterministic_veto: true }));
   assert.equal(mediaExit(2, "BLOCKED: media missing\n"), 2);
   assert.equal(mediaExit(0, "PASS: media valid\n"), 0);
   assert.throws(() => mediaExit(0, "BLOCKED: contradictory status\n"));
-  console.log("quality runner self-test valid (hard-quality and media fail closed)");
+  console.log("quality runner self-test valid (release claims, hard-quality, and media fail closed)");
   process.exit(0);
 }
 
 if (cleanInstall) run("Install locked dependencies", npm, ["ci"]);
 run("TypeScript (no emit)", npm, ["exec", "tsc", "--", "--noEmit", "-p", "tsconfig.json"]);
 run("Full test suite", npm, ["test"]);
-run("Build Paper app shell", npm, ["run", "build:paper"]);
-run("Build Video app shell", npm, ["run", "build:video"]);
+run("Path-attestation regression suite", process.execPath, ["evals/claim-integrity/path-attestation.test.mjs"]);
+const buildEnv = { ...process.env, VITE_VIDEO_ORIGIN: process.env.VITE_VIDEO_ORIGIN ?? "http://127.0.0.1:4174", VITE_PAPER_ORIGIN: process.env.VITE_PAPER_ORIGIN ?? "http://127.0.0.1:4173" };
+run("Build Paper app shell", npm, ["run", "build:paper"], repoRoot, buildEnv);
+run("Build Video app shell", npm, ["run", "build:video"], repoRoot, buildEnv);
 run("Build protocol probes", npm, ["run", "build:probe"]);
 run("Pipeline validator self-test", process.execPath, ["evals/validate-pipeline.mjs", "--self-test"]);
 run("Current pipeline registry", process.execPath, ["evals/validate-pipeline.mjs"]);
@@ -62,6 +73,14 @@ const releaseClaims = spawnSync(process.execPath, ["evals/claim-integrity/releas
 });
 process.stdout.write(`${releaseClaims.stdout ?? ""}${releaseClaims.stderr ?? ""}`);
 if (releaseClaims.error) throw releaseClaims.error;
+let releaseClaimsResult;
+try {
+  releaseClaimsResult = JSON.parse(releaseClaims.stdout);
+} catch {
+  throw new Error(`Expected current release claims to return JSON; got exit code ${releaseClaims.status}`);
+}
+const releaseClaimsStatus = releaseClaimsExit(releaseClaims.status, releaseClaimsResult);
+if (releaseClaimsStatus !== 0) console.log("BLOCKED: current release claims contain deterministic vetoes");
 run("Hard-quality self-test", process.execPath, ["evals/hard-quality/validate-hard-quality.mjs", "--self-test"]);
 console.log("\n==> Current hard-quality assessment");
 const hardQuality = spawnSync(process.execPath, ["evals/hard-quality/validate-hard-quality.mjs", "evals/hard-quality/current-release.assessment.json"], {
@@ -107,4 +126,4 @@ const releaseStatus = evaluateReleaseStatus(repoRoot, {
 });
 console.log(formatConsoleSummary(releaseStatus));
 if (releaseStatus.overall_status === "FAIL") throw new Error("Release readiness evaluation failed");
-if (hardQualityStatus !== 0 || mediaStatus !== 0 || releaseStatus.overall_status === "BLOCKED") process.exit(2);
+if (releaseClaimsStatus !== 0 || hardQualityStatus !== 0 || mediaStatus !== 0 || releaseStatus.overall_status === "BLOCKED") process.exit(2);

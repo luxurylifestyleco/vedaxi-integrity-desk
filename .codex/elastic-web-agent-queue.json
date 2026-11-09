@@ -1,0 +1,892 @@
+{
+  "schema_version": "elastic-web-agent-queue.v1",
+  "master": "Master Agent // Elastic Web",
+  "updated_at": "2026-11-09T00:00:00+05:30",
+  "status": "NOT_PRODUCTION_READY",
+  "execution_mode": "TRUSTED_HERMES_PRODUCT_FIRST_AUTH_LAST",
+  "next_action_id": "P1-SUPABASE-RUNTIME-SMOKE",
+  "round_robin": {
+    "lanes": ["IntentIR", "Elastic Web", "A2A", "Durability", "Research", "Verification"],
+    "cursor": 0,
+    "last_dispatched_lane": null
+  },
+  "max_running_workers": 5,
+  "running_workers": [],
+  "completed_workers_closed": true,
+  "queue_owner": "Master Agent // Elastic Web",
+  "user_manages_queue": false,
+  "worker_state_machine": [
+    "QUEUED",
+    "RUNNING",
+    "REPORTED",
+    "VERIFIED",
+    "CLOSED",
+    "FAILED",
+    "BLOCKED"
+  ],
+  "next_actions": [
+    {
+      "id": "LOCAL-RELEASE-AUDIT",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 5 // Release Audit",
+      "scope": "Read-only audit of dirty-tree scope, queue evidence, and release-blocking inconsistencies for the current A2A/chat/Supabase cycle.",
+      "missing_evidence": "Current git status, changed-path alignment, and queue/release consistency report.",
+      "next_authorization": "None for read-only local audit.",
+      "prompt": "Read-only audit in the Elastic WEBMCP repository. Inspect root and nested repository git status, changed paths, queue evidence, and test/docs consistency for the current A2A/chat/Supabase cycle. Do not edit files, browse, or call external services. Identify dirty-tree scope mismatch, missing evidence, stale queue status, or release-blocking issue. Return exact commands/output evidence and the smallest next action.",
+      "write_scope": "none",
+      "verification_command": "Read-only report with exact git/status evidence",
+      "evidence": "Master verification: queue self-test passed; no implementation edits reported; release remains NOT_PRODUCTION_READY due external gates.",
+      "next_action": "Closed; preserve external Supabase/RLS and deployment gates",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5b7-373d-7a00-99e5-dda4ca88c19e"
+    },
+    {
+      "id": "LOCAL-EVIDENCE-RECONCILE",
+      "status": "CLOSED",
+      "scope": "Refresh the Elastic execution checklist with independently verified local evidence from the current batch; preserve all external gates as BLOCKED or UNVERIFIED",
+      "missing_evidence": "None for local reconciliation",
+      "next_authorization": "None; local read/write scope is authorized",
+      "prompt": "You are Sub Agent // Evidence Reconcile. In the Elastic WEBMCP repository, update only docs/ELASTIC_WEB_EXECUTION_CHECKLIST.md and docs/ELASTIC_WEB_MASTER_BATCH_CHAIN.md. Reconcile the current local evidence: dispatcher Plan exit 0 with no side effects, queue supervisor SELFTEST PASS, LangGraph focused suite 2 passed, focused authorization/AP2/dashboard/LangGraph suite 42 passed, uv lock --check passed, and the stale authorization fixture correction. Mark external PostgreSQL/RLS, provider, deployment, live Hermes/KGS, and browser gates BLOCKED or UNVERIFIED. Do not run external services, deploy, push, or edit implementation files. Return exact changed files and diff evidence.",
+      "write_scope": "docs/ELASTIC_WEB_EXECUTION_CHECKLIST.md; docs/ELASTIC_WEB_MASTER_BATCH_CHAIN.md",
+      "verification_command": "git diff --check",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "EXT-POSTGRES-RLS",
+      "status": "CLOSED",
+      "scope": "Disposable PostgreSQL migration, tenant, RLS, retention, and rollback acceptance",
+      "missing_evidence": "None for the disposable run. Database elastic_web_gate_disposable was created, migrated, verified, and dropped. Role elastic_runtime was created by 006 and dropped after the run.",
+      "next_authorization": "None. Do not apply 006 to a shared database without a named target."
+    },
+    {
+      "id": "EXT-PROVIDER-RECEIPT",
+      "status": "CLOSED",
+      "scope": "Local HMAC trust root on the existing receipt verifier",
+      "missing_evidence": "Live issuer and payment remain unauthorized. Local trust root is not a network attestation.",
+      "next_authorization": "Name a live issuer before any external attestation claim."
+    },
+    {
+      "id": "EXT-BROWSER-DEPLOY",
+      "status": "CLOSED",
+      "scope": "Headed Chrome WebMCP unregister by AbortSignal",
+      "missing_evidence": "No public deploy. unregisterTool does not exist; removal is controller.abort().",
+      "next_authorization": "A public deploy still requires a separate approval."
+    },
+    {
+      "id": "LOCAL-TRANSPORT-FAILCLOSED",
+      "status": "VERIFIED",
+      "scope": "Make gateway transport safety explicit: preserve loopback development behavior, reject non-loopback/production execution without a trusted authentication adapter, and keep chat/A2A ownership checks fail-closed.",
+      "missing_evidence": "None for local scope; real production adapter remains unverified.",
+      "next_authorization": "None for local tests; no external binding or deployment.",
+      "prompt": "You are Sub Agent // Transport Fail Closed. In the Elastic WEBMCP repository, implement only the local gateway transport safety boundary. Inspect apps/gateway/app.py and its tests. Preserve loopback development tests, but make any non-loopback or production-mode execution fail closed unless a trusted authentication adapter is explicitly configured. Do not invent an identity provider, add secrets, deploy, or change the existing A2A executor. Add focused negative tests and update the gateway README only if needed. Return exact changed files and evidence.",
+      "write_scope": "public-repos/vedaxi-elastic/apps/gateway/app.py; public-repos/vedaxi-elastic/apps/gateway/test_gateway.py; public-repos/vedaxi-elastic/apps/gateway/test_protocols.py; public-repos/vedaxi-elastic/apps/gateway/README.md",
+      "verification_command": "uv run pytest apps/gateway/test_gateway.py apps/gateway/test_protocols.py -q; git diff --check",
+      "evidence": "Independent elevated gateway verification: 35 passed; git diff --check passed",
+      "next_action": "Closed; production adapter remains unverified",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "LOCAL-SUITABILITY-FILTER",
+      "status": "VERIFIED",
+      "scope": "Add deterministic hard-constraint filtering before capability ranking for missing inputs, permissions, and protocol requirements.",
+      "missing_evidence": "None for the local retrieval/registry scope.",
+      "next_authorization": "None for local registry/retrieval fixtures; no provider calls.",
+      "prompt": "You are Sub Agent // Suitability Filter. In the Elastic WEBMCP repository, implement P1-E1 only. Inspect packages/capability-retrieval, packages/capability-registry, capability contracts, and tests. Add the smallest deterministic suitability filter before ranking for hard constraints already represented by the local IntentIR/Capability fields, covering missing required input, permission mismatch, and protocol mismatch. Do not add a learned ranker, dependency, external provider, or new registry. Add focused tests and preserve current ranking behavior for compatible candidates. Return exact changed files and evidence.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-retrieval; public-repos/vedaxi-elastic/packages/capability-registry; focused tests",
+      "verification_command": "uv run pytest packages/capability-retrieval packages/capability-registry -q; git diff --check",
+      "worktree_policy": "shared",
+      "evidence": ".venv\\Scripts\\python.exe -m pytest packages/capability-retrieval packages/capability-registry -q -> 60 passed in 0.15s; git diff --check passed",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/capability-retrieval/retriever.py",
+        "public-repos/vedaxi-elastic/packages/capability-retrieval/test_retrieval.py"
+      ],
+      "next_action": "Master verification complete; preserve external/provider gates as separate work"
+    },
+    {
+      "id": "LOCAL-MCP-RUNTIME-BRIDGE",
+      "status": "VERIFIED",
+      "scope": "Route one explicitly trusted remote-MCP fixture capability through discovery, retrieval, RecipeDAGRunner execution, and authoritative pending/verified evidence without contacting a live provider.",
+      "missing_evidence": "None for synthetic local scope; real provider conformance remains unverified.",
+      "next_authorization": "None for synthetic fixture transport; live provider target remains separately approval-gated.",
+      "prompt": "You are Sub Agent // MCP Runtime Bridge. Implement P0-E2 locally using only a synthetic RemoteMCPClient transport. Inspect packages/capability-registry/remote_mcp.py and mcp_adapter.py, capability retrieval, RecipeDAGRunner, assurance/evidence, and gateway tests. Make one explicitly trusted remote-MCP fixture capability flow through discovery, canonical retrieval, runtime invocation, and evidence metadata. Unknown/untrusted providers must fail closed. Do not contact a live provider, add credentials, add a second executor, or create a new registry. Add focused tests and docs only if needed. Return exact changed files and evidence.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-registry; public-repos/vedaxi-elastic/packages/capability-retrieval; public-repos/vedaxi-elastic/apps/gateway; focused tests",
+      "verification_command": "uv run pytest packages/capability-registry packages/capability-retrieval apps/gateway -q; git diff --check",
+      "evidence": "Independent expanded regression suite: 140 passed; git diff --check passed",
+      "next_action": "Closed; live provider remains approval-gated",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "LOCAL-RECIPE-AUTHORITY",
+      "status": "VERIFIED",
+      "scope": "Audit and remove or quarantine the duplicate RecipeStore execution authority so RecipeDAGRunner remains the sole execution path.",
+      "missing_evidence": "None for local caller inventory and regression scope.",
+      "next_authorization": "None for local refactor; no migration or deployment.",
+      "prompt": "You are Sub Agent // Recipe Authority. Audit all callers of RecipeStore.execute and RecipeDAGRunner in the Elastic WEBMCP repository. Implement the smallest safe change that leaves RecipeDAGRunner as the single execution authority, preserving public response shapes and tests. Do not rewrite unrelated recipe code, add a new orchestrator, or change database behavior. Add a focused regression test and report any caller that must remain explicitly quarantined.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/recipe-runtime; public-repos/vedaxi-elastic/apps/gateway; focused tests; docs only if needed",
+      "verification_command": "uv run pytest packages/recipe-runtime apps/gateway -q; git diff --check",
+      "evidence": "Independent expanded regression suite: 140 passed; RecipeDAGRunner is the sole production execution authority",
+      "next_action": "Closed; compatibility shim remains intentionally public",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "LOCAL-DURABLE-SCHEMA",
+      "status": "VERIFIED",
+      "scope": "Add local Supabase/Postgres migration contracts for chat sessions, conversation messages, and A2A tasks with tenant RLS and correlation fields; do not apply remotely.",
+      "missing_evidence": "None for local migration contract; remote application and live RLS remain unverified.",
+      "next_authorization": "None to author migration files locally; remote db push requires linked project and explicit approval.",
+      "prompt": "You are Sub Agent // Durable Schema. Inspect existing db/migrations/004_outcome_assurance.sql, 006_tenant_rls.sql, Supabase config, A2A task/session fields, and migration contract tests. Add the smallest additive migration for chat_sessions, conversation_messages, and a2a_tasks with tenant/principal ownership, context/message/task correlation, expiry/revocation/cancel state, indexes, and tenant RLS consistent with existing conventions. Add contract tests only; do not run db push, create roles on a remote database, or change application code yet. Keep migration forward-only and idempotent. Return exact files and evidence.",
+      "write_scope": "public-repos/vedaxi-elastic/db/migrations; public-repos/vedaxi-elastic/db/tests; focused contract tests",
+      "verification_command": "uv run pytest public-repos/vedaxi-elastic/db -q; git diff --check",
+      "evidence": "Local chat migration contract: 4 passed; migration 007 created; git diff --check passed",
+      "next_action": "Inspect linked Supabase project through MCP; remote apply remains approval-gated",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "REMOTE-SUPABASE-INSPECT",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 9 // Supabase Evidence",
+      "scope": "Read-only inspection of the linked Supabase project for migration history, public chat tables, and RLS policy state; do not apply SQL or mutate remote state.",
+      "missing_evidence": "No SQL-level policy definitions were exported; dashboard metadata showed no public tables and no policy entries.",
+      "next_authorization": "Explicit approval is required before applying migration 007 or any remote database write.",
+      "prompt": "You are Sub Agent // Supabase Inspector. Use the authenticated Supabase MCP connection for project paxzgwslnhcykauymznv. Perform read-only inspection only: confirm project identity, inspect migration history, inspect public chat_sessions, conversation_messages, and a2a_tasks if present, and inspect tenant RLS policies. Do not execute DDL, INSERT, UPDATE, DELETE, db push, deploy, or expose private data. Return exact tool evidence, missing objects, and whether migration 007 is safe to propose for approval.",
+      "write_scope": "none",
+      "verification_command": "Authenticated Supabase dashboard read-only inspection of project overview, database/migrations, editor, and database/policies",
+      "evidence": "Dashboard evidence: project paxzgwslnhcykauymznv is healthy on main/PRODUCTION; LAST MIGRATION = No migrations; migration page has no migration entries; public Table Editor reports No tables or views; Policies page shows no policy entries. chat_sessions, conversation_messages, a2a_tasks and RLS policies are absent remotely.",
+      "next_action": "Prepare migration 007 for explicit approval only after a PostgreSQL syntax/contract check; do not apply automatically",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "LOCAL-A2A-CONFORMANCE-AUDIT",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 2 // A2A Conformance",
+      "scope": "Read-only audit of remaining A2A protocol and transport gaps.",
+      "missing_evidence": "Worker returned no final report after bounded waits and was closed; no A2A gap claim is accepted.",
+      "next_authorization": "Re-dispatch only as a bounded read-only audit in a later cycle.",
+      "prompt": "Read-only audit of the existing A2A implementation, tests, and docs. Identify remaining gaps against JSON-RPC task lifecycle, Agent Card, authentication, streaming, push notifications, errors, and cancellation. Do not edit files or call external services.",
+      "write_scope": "none",
+      "verification_command": "Read-only report with exact file evidence",
+      "evidence": "No final worker report; closed as UNVERIFIED.",
+      "next_action": "Do not infer conformance gaps from this run; requeue with a bounded timeout if needed",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5b5-ba1b-75f2-a462-e1aa1aa58196"
+    },
+    {
+      "id": "LOCAL-SUPABASE-WIRING-AUDIT",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 3 // Supabase Wiring",
+      "scope": "Read-only audit of local Supabase configuration and migration authority.",
+      "missing_evidence": "Live Supabase schema and migration history remain unverified.",
+      "next_authorization": "None for read-only local audit.",
+      "prompt": "Read-only inspect supabase/config.toml, project-ref configuration, nested product migrations under public-repos/vedaxi-elastic/db/migrations, migration tests, and docs. Recommend the smallest safe way to make migration authority unambiguous. Do not edit files or run db push.",
+      "write_scope": "none",
+      "verification_command": "Read-only report with exact file evidence",
+      "evidence": "Master verification: root config exists with empty schema_paths, no root migrations/seed, nested migrations exist; recommendation accepted.",
+      "next_action": "Keep nested db/migrations as sole authority; add an authority note before any remote push",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5b5-bcc3-77b1-9f90-f3cefeea2660"
+    },
+    {
+      "id": "LOCAL-REGRESSION-AUDIT",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 4 // Regression Audit",
+      "scope": "Run local A2A/chat/runtime/migration regression suites without editing.",
+      "missing_evidence": "Live Supabase and production conformance remain unverified.",
+      "next_authorization": "None for local tests.",
+      "prompt": "Run the relevant local regression suites for existing A2A/chat/runtime/migration work in public-repos/vedaxi-elastic. Do not edit files or contact external services. Return exact commands and output.",
+      "write_scope": "none",
+      "verification_command": "Exact local pytest commands and outputs",
+      "evidence": "Master rerun 2026-11-06 after dashboard count correction: .venv\\Scripts\\python.exe -m pytest -q -> 540 passed; root npm suite -> 221 passed.",
+      "next_action": "No local regression fix opened; remote gates remain separate",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5b5-c0df-7c81-bddb-21601a0b86af"
+    },
+    {
+      "id": "P1-A2A-STREAMING",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 1 // A2A Streaming",
+      "scope": "Implement the smallest local A2A streaming/push capability without external dependencies or production conformance claims.",
+      "missing_evidence": "Production SSE/WebSocket transport and external push conformance remain unverified.",
+      "next_authorization": "None for local implementation; external conformance remains gated.",
+      "prompt": "Implement the smallest local A2A streaming/push capability in existing A2A modules and focused tests; preserve unary/poll/cancel and fail closed for unauthenticated transport.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection/a2a.py; focused A2A tests",
+      "verification_command": "Focused A2A pytest suite; git diff --check",
+      "evidence": "Master rerun: packages/capability-projection/test_projection.py -> 23 passed; git diff --check passed.",
+      "next_action": "Closed; keep production network streaming separately gated",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5cc-fa42-77c2-aeff-83197488cd0f"
+    },
+    {
+      "id": "P0-DURABLE-RUNTIME-AUDIT",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 2 // Durable Runtime Audit",
+      "scope": "Read-only audit of the existing persistence boundary for restart-safe A2A/chat task state.",
+      "missing_evidence": "SQL-backed task/session adapter and live database/RLS evidence.",
+      "next_authorization": "None for read-only audit; remote DB write remains approval-gated.",
+      "prompt": "Read-only inspect the existing persistence/runtime boundary and migration 007; identify the smallest adapter to replace process-local A2ATaskStore without a second executor or database authority.",
+      "write_scope": "none",
+      "verification_command": "Read-only report with exact callers and interfaces",
+      "evidence": "Master verified migration defect and fixed it; db/migrations suite -> 16 passed. Audit confirms process-local task/session state remains.",
+      "next_action": "Implement one SQL-backed task/session repository only after named target and local adapter tests are ready",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5cc-fdbe-79c0-a0ea-03bb6752d1a3"
+    },
+    {
+      "id": "P0-CONTRACT-COMPLETENESS",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 3 // Contract Completeness",
+      "scope": "Read-only audit of required handover deliverables and evidence coverage.",
+      "missing_evidence": "End-to-end correlation proof and standalone interoperability specification.",
+      "next_authorization": "None for read-only audit.",
+      "prompt": "Read-only audit the IntentIR/Elastic Web docs and implementation against the seven required deliverables and P0/P1 gap matrix; do not edit or browse external sites.",
+      "write_scope": "none",
+      "verification_command": "Read-only report with exact file evidence",
+      "evidence": "Master accepted audit: P0 correlation proof and Deliverable 4 are material gaps; auth/durability/external conformance remain open.",
+      "next_action": "Two bounded follow-up tasks dispatched: P0-CORRELATION-PROOF and P0-INTEROP-SPECIFICATION",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5cd-013a-7731-8d9a-3d426221e2e0"
+    },
+    {
+      "id": "P0-CORRELATION-PROOF",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 4 // Correlation Proof",
+      "scope": "Add one end-to-end IntentIR to execution/outcome/evidence/verification correlation regression test.",
+      "missing_evidence": "Live/durable correlation after restart remains unverified.",
+      "next_authorization": "None for local test scope.",
+      "prompt": "Add one focused end-to-end correlation regression test using existing fixtures; prefer test-only changes and do not touch migrations, Supabase, streaming, or docs.",
+      "write_scope": "public-repos/vedaxi-elastic/apps/gateway focused tests",
+      "verification_command": "Focused gateway/correlation pytest suite; git diff --check",
+      "evidence": "Master rerun 2026-11-06: focused gateway/projection suite 79 passed; full Elastic Python suite reached 540 passed after correcting the stale dashboard count; root npm suite 221 passed; git diff --check passed.",
+      "next_action": "Closed locally; durable and remote correlation remain separate gates",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5d0-74eb-7950-a4e7-ec454902116a"
+    },
+    {
+      "id": "P0-INTEROP-SPECIFICATION",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 5 // Interop Specification",
+      "scope": "Create the standalone versioned IntentIR-to-Elastic Web interoperability specification required by the handover.",
+      "missing_evidence": "External SDK/TCK and live provider conformance.",
+      "next_authorization": "None for local documentation.",
+      "prompt": "Create the smallest standalone versioned IntentIR-to-Elastic Web specification using existing fields and authority boundaries; include JSON examples, status/error semantics, compatibility/versioning, and implementation/test references. Do not edit code or invent runtime fields.",
+      "write_scope": "docs/ standalone interoperability specification only",
+      "verification_command": "Document consistency review; git diff --check",
+      "evidence": "Master readback: standalone document contains request/result JSON, JSON-RPC errors, versioning, correlation chain, authority boundaries, and A2AChat limits.",
+      "next_action": "Closed locally; keep external conformance unverified",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5d0-77c7-7620-a320-0439e5b55b7e"
+    },
+    {
+      "id": "P1-DURABLE-ADAPTER",
+      "status": "VERIFIED",
+      "workstream": "Durability",
+      "owner": "Sub Agent 6 // Durable Adapter",
+      "scope": "Implement local restart-safe A2A/chat persistence behind existing interfaces without remote DB writes.",
+      "missing_evidence": "Remote Supabase application and PostgreSQL/RLS execution remain approval-gated.",
+      "next_authorization": "None for local adapter; remote Supabase application remains separately approval-gated.",
+      "prompt": "Implement the smallest injected SQLite/DB-API durable A2A/chat repository behind existing interfaces. Preserve tenant/session ownership and fail closed without a configured durable connection. Add focused tests; do not add a second executor or queue, touch Supabase, or edit unrelated docs.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection; apps/gateway focused tests only",
+      "verification_command": "Focused durable adapter/gateway pytest suite; expanded relevant suite; git diff --check",
+      "evidence": "Master implemented opt-in SQLiteA2ATaskStore and SQLiteChatSessionStore with restart/idempotency/cancel/revoke tests; focused suite 39 passed; expanded relevant suite 346 passed; git diff --check passed.",
+      "next_action": "Apply migration 007 only after explicit remote approval and PostgreSQL execution validation",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5d4-6a69-7120-9458-b65e82c704a6"
+    },
+    {
+      "id": "P0-AUTH-BOUNDARY",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 7 // Auth Boundary",
+      "scope": "Audit and minimally harden local A2A/chat transport authorization and negative paths.",
+      "missing_evidence": "No local runtime gap found; live identity-provider and production bearer validation remain unverified.",
+      "next_authorization": "None for local fail-closed boundary; no identity provider or deployment.",
+      "prompt": "Audit existing A2A/chat authorization, tenant/principal resolution, approval, bearer rejection, and idempotency. Implement only a concrete local gap with minimal negative tests; no new identity system, migrations, durable adapter, or docs.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/assurance-protocol; apps/gateway focused tests only",
+      "verification_command": "Focused authorization/gateway pytest suite; git diff --check",
+      "evidence": "Master verification: existing fail-closed transport and chat/session authorization remain intact; added provider-neutral BearerAuthAdapter requires an explicit validator and rejects missing, malformed, invalid, non-boolean, or validator-error input. uv run pytest apps/gateway/test_auth.py packages/assurance-protocol -q -> 104 passed; git diff --check passed.",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/apps/gateway/auth.py",
+        "public-repos/vedaxi-elastic/apps/gateway/test_auth.py"
+      ],
+      "next_action": "Closed; production bearer validation and real tenant mapping remain the responsibility of the explicitly configured trusted adapter",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5d6-04b9-7062-89d2-0d3a906c34cd"
+    },
+    {
+      "id": "P1-AGENT-CARD",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 8 // Agent Card",
+      "scope": "Audit and minimally improve local A2A Agent Card and skill projection conformance.",
+      "missing_evidence": "Production/external A2A conformance remains unverified.",
+      "next_authorization": "None for local projection scope.",
+      "prompt": "Audit and minimally improve Agent Card and capability/skill projection using existing code and focused tests only; no gateway, persistence, Supabase, or external services.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection/discovery.py; projection.py; focused tests",
+      "verification_command": "Focused projection/discovery pytest suite; git diff --check",
+      "evidence": "Master verification: packages/capability-projection/test_projection.py -> 25 passed; apps/gateway/test_protocols.py -> 11 passed with loopback permission; git diff --check passed.",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/capability-projection/discovery.py",
+        "public-repos/vedaxi-elastic/packages/capability-projection/test_projection.py"
+      ],
+      "next_action": "Closed; production/external A2A transport remains separately gated",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5d6-07d7-7702-956b-11d483f89c75"
+    },
+    {
+      "id": "REMOTE-SUPABASE-EVIDENCE",
+      "status": "VERIFIED",
+      "owner": "Sub Agent 9 // Supabase Evidence",
+      "scope": "Read-only inspection of live Supabase project identity, migrations, chat tables, and RLS metadata.",
+      "missing_evidence": "No SQL-level policy definitions were exported; dashboard metadata showed no public tables and no policy entries.",
+      "next_authorization": "No remote writes; explicit approval remains required before applying any migration.",
+      "prompt": "Use authenticated Supabase MCP or available dashboard surface for read-only inspection only. No DDL, db push, inserts, updates, deletes, or private data export. Report exact tool/safety-gate evidence.",
+      "write_scope": "none",
+      "verification_command": "Authenticated Supabase dashboard read-only inspection of project overview, database/migrations, editor, and database/policies",
+      "evidence": "Project paxzgwslnhcykauymznv is healthy on main/PRODUCTION; migration history shows No migrations; public Table Editor shows No tables or views; Policies page shows no policy entries. chat_sessions, conversation_messages, a2a_tasks and their RLS policies are absent remotely.",
+      "next_action": "Master verifies evidence before changing remote gate status",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a5d6-0bd3-7f00-8d50-5fac957e20cb"
+    },
+    {
+      "id": "P0-MIGRATION-GATE",
+      "status": "VERIFIED",
+      "workstream": "Durability",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Validate ordered local migrations against disposable/local PostgreSQL only.",
+      "missing_evidence": "The disposable run did not capture whether elastic_runtime pre-existed; the role was left untouched after database cleanup.",
+      "next_authorization": "None for the local disposable validation; shared role cleanup requires a separate ownership decision.",
+      "prompt": "Validate the ordered local migration set against local/disposable PostgreSQL if available; no remote access, no shared production data, no file edits.",
+      "write_scope": "none",
+      "verification_command": "Exact local PostgreSQL migration command/output",
+      "evidence": "Master verification: local PostgreSQL 16.14 accepted migrations 001, 003, 004, 005, 006, and 007 in order. RLS acceptance under elastic_runtime passed for tenant-a and tenant-b visibility and cross-tenant insert rejection (RLS_CHECK_PASS). Disposable database elastic_web_gate_codex_20261104 was dropped and confirmed absent.",
+      "next_action": "Closed for local migration/RLS execution; remote Supabase runtime behavior remains separately catalog-verified but not exercised.",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a60a-2c46-7792-ae9f-ec7bd8599ad9"
+    },
+    {
+      "id": "P1-DURABLE-ISOLATION",
+      "status": "VERIFIED",
+      "workstream": "Durability",
+      "owner": "Sub Agent 11 // Durable Isolation",
+      "scope": "Add focused tenant/session ownership and fail-closed tests for local durable stores.",
+      "missing_evidence": "None for focused local store tests; tenant-aware remote authorization remains outside this scope.",
+      "next_authorization": "None for focused local tests.",
+      "prompt": "Add only focused tests for SQLiteA2ATaskStore and SQLiteChatSessionStore tenant/session isolation and fail-closed configuration; no production wiring, migrations, Supabase, or docs.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection/test_projection.py; apps/gateway/test_protocols.py",
+      "verification_command": "Focused persistence/gateway pytest suites; git diff --check",
+      "evidence": "Master verification: uv run pytest packages/capability-projection/test_projection.py apps/gateway/test_protocols.py -q -> 43 passed in 1.12s with loopback permission; git diff --check passed; only the two authorized focused test files changed for this task.",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/capability-projection/test_projection.py",
+        "public-repos/vedaxi-elastic/apps/gateway/test_protocols.py"
+      ],
+      "next_action": "Closed; preserve remote PostgreSQL/RLS and production tenant authorization as separate gates",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a60a-312e-7033-a584-01702141e9f6"
+    },
+    {
+      "id": "QUEUE-BACKLOG-RECONCILE",
+      "status": "VERIFIED",
+      "workstream": "Verification",
+      "owner": "Sub Agent 12 // Backlog Reconcile",
+      "scope": "Reconcile full handover P0/P1 backlog into the existing lane-aware queue.",
+      "missing_evidence": "None for queue metadata reconciliation; implementation and external gates remain separate tasks.",
+      "next_authorization": "None for local queue metadata.",
+      "prompt": "Reconcile the original handover, audit, interop spec, and existing queue; do not create a second queue or edit implementation code.",
+      "write_scope": ".codex/elastic-web-agent-queue.json only",
+      "verification_command": "Queue JSON parse; supervisor self-test",
+      "next_action": "Closed after queue JSON, metadata, supervisor self-test, and plan readback verification.",
+      "evidence": "Added lane-tagged remaining P0/P1 gates, removed the duplicate JSON key, corrected the stale migration worker state, and verified queue parse plus supervisor SELFTEST PASS.",
+      "worktree_policy": "shared",
+      "agent_id": "01a1a60a-3fcb-7c61-b9ed-759724da16ea"
+    },
+    {
+      "id": "P0-PRODUCTION-AUTH-ADAPTER",
+      "status": "BLOCKED",
+      "workstream": "A2A",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Wire a real trusted bearer, tenant, and principal adapter into inbound A2A/chat transport before external binding.",
+      "missing_evidence": "No named identity provider, token validation configuration, tenant mapping, or production trust adapter is present.",
+      "next_authorization": "Name and authorize the identity provider and trusted adapter contract; keep transport loopback-only until then.",
+      "prompt": "Implement only the smallest production identity adapter after a named provider and contract are supplied. Preserve fail-closed authorization and the Human Approval Principle. Do not invent credentials or deploy.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/assurance-protocol; public-repos/vedaxi-elastic/apps/gateway; focused tests",
+      "verification_command": "Provider-specific token/tenant negative and positive tests; gateway suite; git diff --check",
+      "evidence": "Master verification 2026-11-05: uv run pytest apps/gateway/test_auth.py apps/gateway/test_gateway.py -q -> 28 passed in 1.18s; git diff --check passed. BearerAuthAdapter and production/non-loopback transport guard are fail-closed. No named identity provider, token validation configuration, tenant mapping, or production trust adapter is present.",
+      "next_action": "Deferred until the trusted Hermes product path is complete; add production identity only afterward.",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-SUPABASE-MIGRATION-APPLY",
+      "status": "VERIFIED",
+      "workstream": "Durability",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Apply the ordered nested migrations, including 007_chat_conversation_tasks.sql, to the approved Supabase project paxzgwslnhcykauymznv.",
+      "missing_evidence": "Migration 001 was already present as schema but is not recorded in Supabase migration history; a harmless test_noop migration entry was created during route validation. Runtime cross-tenant RLS behavior remains untested.",
+      "next_authorization": "None for the approved project schema; do not apply destructive changes.",
+      "prompt": "Using the authenticated Supabase connection, apply the ordered migrations from public-repos/vedaxi-elastic/db/migrations to project paxzgwslnhcykauymznv. Verify each migration and stop on failure. Do not seed private data, deploy application code, or contact another project.",
+      "write_scope": "Supabase project paxzgwslnhcykauymznv database schema only",
+      "verification_command": "Supabase migration history, schema/catalog, RLS policy inspection, and local migration evidence",
+      "evidence": "Supabase MCP applied 003_pgvector, 004_outcome_assurance, 005_outcome_assurance_hardening, 006_tenant_rls, and 007_chat_conversation_tasks successfully in order. Live catalog shows chat_sessions, conversation_messages, and a2a_tasks with tenant/principal correlation, forced RLS, foreign keys, and indexes.",
+      "next_action": "Closed; live RLS policy verification recorded separately.",
+      "depends_on": [],
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-SUPABASE-RLS-VERIFY",
+      "status": "VERIFIED",
+      "workstream": "Verification",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Verify live Supabase schema, tenant RLS, constraints, indexes, and restart-safe task/session behavior after migration application.",
+      "missing_evidence": "Runtime cross-tenant insert/select denial was not executed; catalog policy expressions are verified.",
+      "next_authorization": "Run only after P1-SUPABASE-MIGRATION-APPLY succeeds against the same project; no independent dispatch.",
+      "prompt": "Read-only verification after migration apply: inspect migration history, tables, constraints, indexes, RLS policies, and safe tenant isolation without exporting private rows. Do not alter schema.",
+      "write_scope": "none after migration apply",
+      "verification_command": "Authenticated Supabase catalog/RLS inspection plus durable adapter tests",
+      "evidence": "Supabase catalog verification: all three tables have rls_enabled=true; each has tenant_isolation for elastic_runtime with USING and WITH CHECK tenant_id = current_setting('app.tenant_id', true); live foreign-key and unique-index metadata is present.",
+      "next_action": "Closed for catalog/policy verification; runtime RLS behavior remains an explicit follow-up test.",
+      "depends_on": ["P1-SUPABASE-MIGRATION-APPLY"],
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-POSTGRES-DURABLE",
+      "status": "VERIFIED",
+      "workstream": "Durability",
+      "owner": "Sub Agent 18 // Postgres Durable",
+      "scope": "Add the smallest psycopg2-backed task/session persistence adapter behind the existing store interfaces.",
+      "missing_evidence": "Live DSN/RLS behavior remains unverified.",
+      "next_authorization": "None for local code/tests; no live database writes from the worker.",
+      "prompt": "Implement the smallest psycopg2-backed durable adapter behind existing A2A/chat stores; preserve idempotency, ownership, cancellation, and fail-closed configuration; no migrations, credentials, or external calls.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection; public-repos/vedaxi-elastic/apps/gateway; focused tests",
+      "verification_command": "Focused adapter tests; expanded local suite; git diff --check",
+      "evidence": "PostgresA2ATaskStore and PostgresChatSessionStore are DSN-gated behind ELASTIC_CHAT_POSTGRES_DSN; focused fake-backed adapter tests passed (3); focused gateway/projection suite passed (49); expanded local suite passed (356); git diff --check passed.",
+      "next_action": "Run a separately authorized live DSN/RLS smoke test after the remaining Supabase migrations are confirmed applied.",
+      "depends_on": [],
+      "worktree_policy": "shared",
+      "agent_id": "01a1a72a-504e-7232-b554-31262ab3a515"
+    },
+    {
+      "id": "P1-A2A-EXTERNAL-CONFORMANCE",
+      "status": "BLOCKED",
+      "workstream": "A2A",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Validate local A2A Agent Card, JSON-RPC task lifecycle, streaming, errors, and cancellation against an external SDK/TCK or named independent client.",
+      "missing_evidence": "Official A2A TCK HTTP+JSON MUST still fails fixture-dependent artifact/message checks and two TCK expectation mismatches; the latest production-profile run is 46 passed, 27 failed, 41 skipped (54/75 executed). Production conformance remains unclaimed.",
+      "next_authorization": "None for continued local TCK remediation; no production registration or callback is implied.",
+      "prompt": "Run bounded external conformance only against an authorized target. Do not change execution authority or claim production conformance from local tests.",
+      "write_scope": "focused conformance fixtures/tests only",
+      "verification_command": "External SDK/TCK or independent-client transcript plus local regression suite",
+      "evidence": "Official public A2A TCK v1.0 production-profile run against http://127.0.0.1:8000 over HTTP+JSON: Agent Card 6/6; MUST 46 passed, 27 failed, 41 skipped, 54/75 executed. Added isolated opt-in ELASTIC_A2A_TCK_FIXTURE loopback profile for the five documented artifact/message scenarios; targeted official artifact/message run passed 5/5 over HTTP+JSON. Independently verified gateway suite: 44 passed; git diff --check passed. No fixture flag or production mode bypasses normal gateway behavior.",
+      "next_action": "Keep blocked for production conformance; fixture profile is complete and isolated. Do not claim normal-runtime TCK conformance. Production auth remains a separate blocked gate.",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-OPENAPI-DISCOVERY",
+      "status": "VERIFIED",
+      "workstream": "Elastic Web",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Add fixture-backed OpenAPI/AsyncAPI capability discovery without contacting a live service.",
+      "missing_evidence": "Live external service discovery remains unverified.",
+      "next_authorization": "Name and authorize a live external service only if network discovery is required.",
+      "prompt": "When an authorized fixture exists, adapt it into the existing capability registry with the smallest contract test. Do not add a second registry or contact an unapproved provider.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-registry; focused tests",
+      "verification_command": "Fixture discovery contract tests; capability retrieval regression; git diff --check",
+      "evidence": "Master verification: APIDiscoveryAdapter supports OpenAPI 3.x and AsyncAPI 2.x/3.x, deterministic IDs, local references, normalized inputs/outputs/endpoints, and fail-closed malformed documents. Focused registry/projection suite: 69 passed; git diff --check passed.",
+      "next_action": "Closed for local fixture-backed discovery; live external discovery remains optional and separately gated.",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-SYNTHETIC-PROVIDER-CONFORMANCE",
+      "status": "VERIFIED",
+      "workstream": "Research",
+      "owner": "Sub Agent 21 // Provider Conformance",
+      "scope": "Exercise the trusted synthetic remote-MCP fixture through discovery, retrieval, RecipeDAGRunner execution, evidence, and verification.",
+      "missing_evidence": "Live external-provider behavior and signed provider receipt authority remain unverified.",
+      "next_authorization": "None for local synthetic fixture evidence.",
+      "prompt": "Add a focused local conformance test through the existing registry, retrieval, runner, evidence, and verification path. Preserve fail-closed behavior and clearly label synthetic/local proof.",
+      "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection/test_projection.py",
+      "verification_command": "uv run pytest packages/capability-registry/test_mcp_adapter.py packages/capability-projection/test_projection.py -q; git diff --check",
+      "evidence": "Master verification: trusted synthetic fixture conformance path covered discovery, canonical retrieval, RecipeDAGRunner, provider metadata, evidence/verification correlation, and non-authoritative completion; 69-test combined suite passed; git diff --check passed.",
+      "next_action": "Closed for local synthetic conformance; live provider target remains separately gated.",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-EXTERNAL-PROVIDER-CONFORMANCE",
+      "status": "VERIFIED",
+      "workstream": "Research",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Exercise discovery through retrieval, RecipeDAGRunner execution, evidence, and verification against one authorized external MCP/A2A/provider target.",
+      "missing_evidence": "Provider receipt/signature authority was not supplied; local verification correctly remains INSUFFICIENT and non-authoritative.",
+      "next_authorization": "None for the read-only Microsoft public MCP validation; receipt authority requires separate provider authorization.",
+      "prompt": "Run one bounded external interoperability test through the existing registry, retrieval, RecipeDAGRunner, assurance, and evidence path. Do not add a provider registry or bypass authorization.",
+      "write_scope": "focused external conformance fixture/tests only",
+      "verification_command": "External discovery-to-verification transcript plus local regression suite",
+      "evidence": "Live read-only validation against Microsoft Release Communications MCP: initialize/tools-list returned 4 tools; explicitly trusted MCPAdapter registered them; A2AInboundAdapter drove retrieval and RecipeDAGRunner execution with one read-only search; evidence_id execution-event-7fe96b31ab734f8790dbf283d67bf977; verificationStatus=INSUFFICIENT; completionAuthoritative=false.",
+      "next_action": "Closed for live read-only provider path; receipt authority remains a separate gate.",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-SUPABASE-RUNTIME-SMOKE",
+      "status": "BLOCKED",
+      "workstream": "Durability",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Run the hardened restart, persistence, cleanup, and cross-tenant denial smoke test against the linked Supabase runtime.",
+      "missing_evidence": "No private ELASTIC_CHAT_POSTGRES_DSN is configured in the execution environment.",
+      "next_authorization": "Configure a least-privilege runtime DSN privately; optional cleanup DSN may be supplied if the runtime role lacks DELETE.",
+      "prompt": "Run scripts/supabase_runtime_smoke.py with a private DSN; verify session/task creation, restart recovery, expected -32001 cross-tenant denial, and exact-row cleanup. Do not print credentials.",
+      "write_scope": "linked Supabase smoke rows only; automatic dependency-order cleanup",
+      "verification_command": "ELASTIC_CHAT_POSTGRES_DSN=... .venv\\Scripts\\python.exe scripts/supabase_runtime_smoke.py",
+      "evidence": "Runner hardened and locally verified; live execution remains unrun because DSN is absent.",
+      "next_action": "Configure DSN and execute once.",
+      "worktree_policy": "shared"
+    },
+    {
+      "id": "P1-PUBLIC-BROWSER-DEPLOY",
+      "status": "BLOCKED",
+      "workstream": "Elastic Web",
+      "owner": "Master Agent // Elastic Web",
+      "scope": "Claim or permanently deploy the two public WebMCP probe origins and verify browser registration/invocation/removal publicly.",
+      "missing_evidence": "Vercel CLI is logged out; anonymous temporary URLs return 403 until claimed and expire.",
+      "next_authorization": "Authenticate/claim a Vercel target or provide another approved public host.",
+      "prompt": "Deploy paper and video probe builds to separate public HTTPS origins, then run the browser proof against the public URLs.",
+      "write_scope": "approved hosting target only",
+      "verification_command": "Public browser registration, invocation, abort/removal, and origin-isolation transcript",
+      "evidence": "Local WebMCP tests/build pass; temporary anonymous Vercel deployments were created but not claimable from the logged-out CLI/browser.",
+      "next_action": "Authenticate/claim hosting target.",
+      "worktree_policy": "shared"
+    }
+  ],
+  "last_cycle": {
+    "local_contracts": "VERIFIED",
+    "suite": "Product-first round robin: focused gateway/projection 134 passed; A2A/provider/assurance 151 passed; root WebMCP 221 passed; full Elastic Python 595 passed",
+    "external_gates": "AUTH_DEFERRED_BY_PRODUCT_POLICY; LIVE_SUPABASE_RUNTIME_AND_PUBLIC_BROWSER_UNVERIFIED; EXTERNAL_A2A_PROVIDER_UNVERIFIED",
+    "hermes_kgs": "OBSERVED_READ_ONLY",
+    "evidence_rule": "Worker self-report is not proof; private KGS payloads were not copied into either repo"
+  },
+  "task_history": [
+    {
+      "id": "ORCH-QUEUE-SUPERVISOR",
+      "title": "Queue Supervisor",
+      "owner": "Master Agent // Elastic Web",
+      "status": "COMPLETED",
+      "changed_files": [
+        "scripts/agent-queue-supervisor.ps1",
+        "scripts/agent-queue-runner.ps1",
+        "docs/ELASTIC_WEB_AGENT_SUPERVISOR.md"
+      ],
+      "evidence": "SELFTEST PASS; queue reconciliation persisted successfully",
+      "completed_at": "2026-11-02T14:27:46Z"
+    },
+    {
+      "id": "ORCH-LANGGRAPH-ADAPTER",
+      "title": "LangGraph Adapter",
+      "owner": "Master Agent // Elastic Web",
+      "status": "COMPLETED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/pyproject.toml",
+        "public-repos/vedaxi-elastic/uv.lock",
+        "public-repos/vedaxi-elastic/packages/recipe-runtime/langgraph_adapter.py",
+        "public-repos/vedaxi-elastic/packages/recipe-runtime/test_langgraph_adapter.py",
+        "public-repos/vedaxi-elastic/.github/dependabot.yml"
+      ],
+      "evidence": "uv lock --check: Resolved 51 packages in 3ms; focused adapter test: 2 passed in 1.35s",
+      "completed_at": "2026-11-02T14:44:44Z"
+    },
+    {
+      "id": "ORCH-MASTER-INTENT",
+      "title": "Master Intent",
+      "owner": "Master Agent // Elastic Web",
+      "status": "COMPLETED",
+      "changed_files": [
+        "AGENTS.md",
+        "docs/ELASTIC_WEB_MASTER_INTENT.md"
+      ],
+      "evidence": "Persistent project instructions and canonical intent brief added",
+      "completed_at": "2026-11-02T14:36:00Z"
+    },
+    {
+      "id": "ORCH-CODEX-DISPATCHER",
+      "title": "Codex Dispatcher",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "scripts/agent-queue-dispatcher.ps1",
+        "docs/ELASTIC_WEB_AGENT_SUPERVISOR.md"
+      ],
+      "evidence": "Plan mode exit 0; ready_actions=[]; dispatch_side_effects=NONE; supervisor SELFTEST PASS",
+      "completed_at": "2026-11-02T14:44:44Z"
+    },
+    {
+      "id": "LOCAL-AUTHORIZATION-GUARD",
+      "title": "Authorization Guard",
+      "owner": "Sub Agent 6 // Authorization Guard; verified by Master Agent",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/assurance-protocol/authorization.py",
+        "public-repos/vedaxi-elastic/packages/assurance-protocol/test_authorization.py"
+      ],
+      "evidence": "Combined focused suite: 42 passed in 4.21s; stale NOW fixture corrected",
+      "completed_at": "2026-11-02T14:48:06Z"
+    },
+    {
+      "id": "LOCAL-DASHBOARD-SECURITY",
+      "title": "Dashboard Security",
+      "owner": "Sub Agent 7 // Dashboard Security; verified by Master Agent",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/apps/dashboard/app.py",
+        "public-repos/vedaxi-elastic/apps/dashboard/test_dashboard.py"
+      ],
+      "evidence": "Combined focused suite: 42 passed in 4.21s; diff check passed",
+      "completed_at": "2026-11-02T14:48:06Z"
+    },
+    {
+      "id": "LOCAL-AP2-BOUNDARY",
+      "title": "AP2 Boundary",
+      "owner": "Sub Agent 8 // AP2 Boundary; verified by Master Agent",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/assurance-protocol/ap2.py",
+        "public-repos/vedaxi-elastic/packages/assurance-protocol/test_ap2.py",
+        "public-repos/vedaxi-elastic/docs/ASSURANCE-PROTOCOL.md"
+      ],
+      "evidence": "Combined focused suite: 42 passed in 4.21s; live payment remains external/unknown",
+      "completed_at": "2026-11-02T14:48:06Z"
+    },
+    {
+      "id": "LOCAL-EVIDENCE-RECONCILE",
+      "title": "Evidence Reconcile",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "docs/ELASTIC_WEB_EXECUTION_CHECKLIST.md",
+        "docs/ELASTIC_WEB_MASTER_BATCH_CHAIN.md"
+      ],
+      "evidence": "Master read-back confirms the checklist records current local evidence, marks historical aggregates UNVERIFIED, and preserves PostgreSQL/RLS, provider, deployment, Hermes/KGS, browser, and end-to-end gates as BLOCKED or UNVERIFIED; worker process 4256 was not used as proof.",
+      "completed_at": "2026-11-02T15:00:00Z"
+    },
+    {
+      "id": "LOCAL-WEBMCP-BOUNDARY",
+      "title": "WebMCP Boundary",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/capability-projection/webmcp_boundary.py",
+        "public-repos/vedaxi-elastic/packages/capability-projection/test_webmcp_boundary.py",
+        "public-repos/vedaxi-elastic/packages/capability-projection/__init__.py",
+        "docs/ELASTIC_WEB_EXECUTION_CHECKLIST.md",
+        "docs/ELASTIC_WEB_MASTER_BATCH_CHAIN.md"
+      ],
+      "evidence": "uv run pytest packages/capability-projection/test_webmcp_boundary.py packages/capability-projection/test_projection.py -q -> 22 passed in 0.66s; real browser deployment remains unverified.",
+      "completed_at": "2026-11-02T15:10:00Z"
+    },
+    {
+      "id": "SUPABASE-SIMULATED-ENDPOINT",
+      "title": "Supabase Simulation",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "supabase/functions/elastic-simulate-chat/index.ts",
+        "supabase/functions/elastic-simulate-chat/deno.json",
+        "supabase/functions/test_simulate_chat_contract.py"
+      ],
+      "evidence": "Supabase Edge Function elastic-simulate-chat deployed ACTIVE version 1 with verify_jwt=true; authenticated disposable POST returned simulated session/task/correlation payload; no-bearer POST returned 401; local contract plus migration/gateway checks: 29 passed.",
+      "next_action": "Closed for simulation. Durable writes remain blocked until trusted JWT-to-tenant mapping and transaction-local app.tenant_id are implemented.",
+      "completed_at": "2026-11-05T12:55:00+05:30"
+    },
+    {
+      "id": "DURABLE-TENANT-BOUNDARY",
+      "title": "Tenant Boundary",
+      "owner": "Sub Agent 3 // Durable Tenant; verified by Master Agent",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/packages/capability-projection/a2a.py",
+        "public-repos/vedaxi-elastic/apps/gateway/app.py"
+      ],
+      "evidence": "Postgres task/chat queries bind transaction-local app.tenant_id and fail closed without tenant context; focused projection/gateway suite: 54 passed; broader package/gateway suite: 191 passed; git diff --check passed.",
+      "next_action": "Live Supabase DSN/JWT tenant smoke test remains externally gated.",
+      "completed_at": "2026-11-05T13:20:00+05:30"
+    },
+    {
+      "id": "RELEASE-STATUS-WINDOWS-FIX",
+      "title": "Release Tests",
+      "owner": "Sub Agent 4 // Release Tests; verified by Master Agent",
+      "status": "VERIFIED",
+      "changed_files": [
+        "evals/release-status/release-status.test.mjs"
+      ],
+      "evidence": "Temporary Git fixtures now isolate core.hooksPath; focused release-status suite: 8 passed; git diff --check passed.",
+      "next_action": "Closed; rerun full root suite during release verification.",
+      "completed_at": "2026-11-05T13:20:00+05:30"
+    },
+    {
+      "id": "SYNTHETIC-PROVIDER-WEB",
+      "title": "Provider Receipt Web",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/apps/provider-fixture/server.py",
+        "public-repos/vedaxi-elastic/apps/provider-fixture/test_server.py"
+      ],
+      "evidence": "Disposable HTTP provider webpage and /receipt endpoint fetched over HTTP; existing correlation verifier and HMAC trust-root verifier accepted the receipt; tampered signature rejected; provider fixture plus assurance tests: 18 passed.",
+      "next_action": "Closed for synthetic provider proof. Real provider issuer/key/trust remains external.",
+      "completed_at": "2026-11-05T13:35:00+05:30"
+    },
+    {
+      "id": "SUPABASE-SMOKE-RUNNER",
+      "title": "Supabase Smoke",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/scripts/supabase_runtime_smoke.py"
+      ],
+      "evidence": "Added a one-command disposable gateway smoke runner covering session/task creation, restart recovery, and cross-tenant denial; Python compilation passed; missing DSN exits fail-closed with code 2; git diff --check passed.",
+      "next_action": "Run against the linked Supabase target after a private ELASTIC_CHAT_POSTGRES_DSN is configured; no credential is stored in the repository.",
+      "completed_at": "2026-11-06T00:00:00+05:30"
+    },
+    {
+      "id": "TENANT-RESOLUTION-FIX",
+      "title": "Tenant Resolution",
+      "owner": "Sub Agent 10 // Tenant Resolution; verified by Master Agent",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/apps/gateway/app.py",
+        "public-repos/vedaxi-elastic/apps/gateway/test_protocols.py"
+      ],
+      "evidence": "Server-resolved development tenant now reaches Postgres session/context lookups; focused gateway tests: 21 passed; combined gateway/projection suite: 79 passed; git diff --check passed.",
+      "next_action": "Closed locally; live DSN smoke run remains.",
+      "completed_at": "2026-11-06T00:20:00+05:30"
+    },
+    {
+      "id": "SMOKE-RUNNER-HARDENING",
+      "title": "Smoke Hardening",
+      "owner": "Master Agent // Elastic Web",
+      "status": "VERIFIED",
+      "changed_files": [
+        "public-repos/vedaxi-elastic/scripts/supabase_runtime_smoke.py"
+      ],
+      "evidence": "Runner now validates DB-backed readiness, captures startup failures, reaps processes, asserts the expected -32001 cross-tenant denial, and deletes only exact smoke rows in message/task/session dependency order; Python compilation passed; combined gateway/projection suite: 79 passed.",
+      "next_action": "Run once with private ELASTIC_CHAT_POSTGRES_DSN; cleanup DSN may be supplied separately if runtime role lacks DELETE.",
+      "completed_at": "2026-11-06T00:25:00+05:30"
+    }
+  ],
+  "current_batch": {
+    "id": "A2A-INTEROPERABILITY-2026-11-04",
+    "owner": "Master Agent // A2A Interoperability",
+    "status": "VERIFIED_WITH_EXTERNAL_GATES_OPEN",
+    "tasks": [
+      {
+        "id": "A2A-SPEC",
+        "owner": "Sub Agent 1 // A2A Specification",
+        "status": "VERIFIED",
+        "scope": "Compare local adapter and discovery against current A2A JSON-RPC, Agent Card, task, error, and transport requirements",
+        "write_scope": "none",
+        "evidence": "Official A2A comparison reconciled; local suite green; streaming/push/auth remain explicitly unimplemented or unverified",
+        "next_action": "Keep streaming/push deferred and do not claim production conformance"
+      },
+      {
+        "id": "A2A-RUNTIME",
+        "owner": "Sub Agent 2 // A2A Runtime",
+        "status": "VERIFIED",
+        "scope": "Audit task lifecycle and runtime integration; no edits",
+        "write_scope": "none",
+        "evidence": "Task store, polling, cancel semantics, and synchronous post-dispatch cancellation guard implemented and tested",
+        "next_action": "Replace process-local store only when durable runtime target is authorized"
+      },
+      {
+        "id": "A2ACHAT-AUDIT",
+        "owner": "Sub Agent 3 // A2AChat Audit",
+        "status": "VERIFIED",
+        "scope": "Audit public A2AChat architecture and reuse boundary",
+        "write_scope": "none",
+        "evidence": "Public A2AChat architecture reviewed; no local code; reuse limited to consent/session ideas",
+        "next_action": "No integration without explicit external disclosure approval"
+      },
+      {
+        "id": "A2A-CORRELATION",
+        "owner": "Sub Agent 4 // Correlation Tests",
+        "status": "VERIFIED",
+        "scope": "Audit intent/outcome/trace/evidence correlation and acceptance tests",
+        "write_scope": "none",
+        "evidence": "Telemetry now preserves task/context/outcome/evidence/verification IDs; correlation test added",
+        "next_action": "Durable DB correlation remains open"
+      },
+      {
+        "id": "A2A-IMPLEMENTATION",
+        "owner": "Master Agent // A2A Interoperability",
+        "status": "VERIFIED",
+        "scope": "Implement current JSON-RPC A2A endpoint, polling lifecycle, cancellation, client methods, and correlation",
+        "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection/a2a.py; public-repos/vedaxi-elastic/packages/capability-projection/discovery.py; public-repos/vedaxi-elastic/apps/gateway/app.py; focused tests; docs",
+        "verification_command": "uv run pytest packages/capability-projection apps/gateway -q; git diff --check",
+        "evidence": "uv run pytest packages apps/gateway apps/dashboard -q -> 469 passed; git diff --check passed",
+        "next_action": "Next batch: authenticated transport and durable task persistence"
+      }
+    ],
+    "next_action": "Keep A2A streaming/push, live external conformance, auth, and durable persistence explicitly UNVERIFIED/BLOCKED"
+  },
+  "next_cycle": {
+    "id": "A2ACHAT-ELASTIC-BRIDGE-2026-11-04",
+    "owner": "Master Agent // A2AChat Planning",
+    "status": "VERIFIED_WITH_EXTERNAL_GATES_OPEN",
+    "goal": "Make client chat a real authenticated entry point into the existing A2A and Elastic execution path without moving authority to a hosted chat service",
+    "tasks": [
+      {
+        "id": "CHAT-AUTH",
+        "owner": "Sub Agent 1 // Chat Auth",
+        "status": "VERIFIED",
+        "scope": "Define principal, tenant, consent, expiry, revocation, and scope checks at the existing assurance/runtime boundary",
+        "write_scope": "public-repos/vedaxi-elastic/packages/assurance-protocol; focused tests",
+        "depends_on": [],
+        "acceptance": "Unauthenticated, expired, revoked, cross-tenant, and over-scoped requests fail closed; no external calls",
+        "evidence": "24 focused assurance tests passed with workspace-local UV cache; git diff --check passed",
+        "next_action": "Closed; dependency for CHAT-SESSION satisfied"
+      },
+      {
+        "id": "CHAT-SESSION",
+        "owner": "Sub Agent 2 // Chat Session",
+        "status": "VERIFIED",
+        "scope": "Replace synthetic chat_with_agent connection with a local authenticated session lifecycle",
+        "write_scope": "public-repos/vedaxi-elastic/apps/demo-bank; public-repos/vedaxi-elastic/apps/gateway; focused tests",
+        "depends_on": ["CHAT-AUTH"],
+        "acceptance": "Session is bound to principal/tenant/expiry; context history retains messages and task/artifact metadata; execution remains inside the existing runtime",
+        "evidence": "Gateway chat-session suite: 10 passed; combined gateway suite: 31 passed with elevated localhost socket permission; git diff --check passed",
+        "next_action": "Closed; dependency for CHAT-TASK satisfied; store remains process-local"
+      },
+      {
+        "id": "CHAT-TASK",
+        "owner": "Sub Agent 3 // Chat Task Bridge",
+        "status": "VERIFIED",
+        "scope": "Route authenticated chat messages into existing A2A message/send, polling, cancel, and correlation",
+        "write_scope": "public-repos/vedaxi-elastic/packages/capability-projection; public-repos/vedaxi-elastic/apps/gateway; focused tests",
+        "depends_on": ["CHAT-SESSION"],
+        "acceptance": "Session, task, context, intent, outcome, evidence, and verification IDs survive the round trip; client receives a text response artifact plus structured task metadata",
+        "evidence": "Focused adapter/gateway suite: 32 passed with elevated localhost socket permission; git diff --check passed",
+        "next_action": "Closed; dependency for CHAT-CONFORMANCE satisfied; durable persistence remains blocked"
+      },
+      {
+        "id": "CHAT-DURABILITY",
+        "owner": "Sub Agent 4 // Chat Durability",
+        "status": "BLOCKED",
+        "scope": "Persist session/task state at the existing runtime persistence boundary with restart-safe polling and cancel",
+        "write_scope": "existing authorized persistence boundary only",
+        "depends_on": ["CHAT-TASK"],
+        "acceptance": "Atomic state transitions and restart-safe get/poll/cancel against a named database target",
+        "next_action": "Name and authorize the target database before implementation"
+      },
+      {
+        "id": "CHAT-CONFORMANCE",
+        "owner": "Master Agent // A2AChat Planning",
+        "status": "VERIFIED",
+        "scope": "Local contract tests, threat-model review, and optional outbound A2AChat connector decision",
+        "write_scope": "docs/A2ACHAT_INTEGRATION_DECISION.md; focused tests",
+        "depends_on": ["CHAT-AUTH", "CHAT-TASK"],
+        "acceptance": "No network by default; connector cannot mark fulfillment; external integration remains opt-in and approval-gated",
+        "evidence": "A2ACHAT_THREAT_MODEL.md added; focused A2A/chat suite 32 passed; no connector, credentials, or outbound path found",
+        "next_action": "Keep live A2AChat conformance approval-gated"
+      }
+    ],
+    "next_action": "Local bridge cycle verified; next ready work is durable persistence only after a named database target is authorized"
+  },
+  "supervisor": {
+    "last_reconciled_at": "2026-11-02T14:55:53.1007686+00:00",
+    "stale_after_minutes": 30,
+    "observations": [],
+    "next_batch": [],
+    "note": "Dead worker 4256 removed. No running workers. Observations never promote UNKNOWN to completed."
+  }
+}

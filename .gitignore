@@ -10,3 +10,25 @@ dist/
 **/.vercel/
 skill-router/
 skill-router-v1.0.0.zip
+/.worktrees/
+/.audit-worktrees/
+
+# Adjacent work products are not part of the VEDAXI web release.
+/deliverables/
+/VDX_Alexa_Elastic_Master_Build_Prompt.md
+
+# Private operator and delivery material. Keep out of the public web repo.
+/.agent-workspaces/
+/.delivery/
+/.private-hardening.patch
+/HANDOFF.md
+/public-repos/
+/.codex/agent-runs/
+/.codex/*.lock
+**/__pycache__/
+*.pyc
+/docs/CONTEXT_MEMORY_ARCHITECTURE.md
+/docs/INVESTOR_PITCH_HANDOVER.md
+/docs/PRESENTATION_DELIVERY_PLAN.md
+
+.vercel
