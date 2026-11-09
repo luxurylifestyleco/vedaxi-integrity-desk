@@ -11,12 +11,12 @@ checkpoint did not advance the revision. Current nested verification is recorded
 ## Current reconciliation - 2026-11-09
 
 - `COMPLETED`: the original IntentIR + Elastic Web handover has an evidence-backed audit, interoperability contract, standards matrix, roadmaps, backlog, decision register, A2AChat decision, and execution checklist.
-- `COMPLETED`: reconciled local P0/P1 implementation surface; current nested full-suite verification is `620 passed in 23.78s`, exit 0, on 2026-11-09. The earlier `377 passed in 15.90s` count is historical worker evidence.
+- `COMPLETED`: reconciled local P0/P1 implementation surface; current nested full-suite verification is `624 passed in 10.51s`, exit 0, on 2026-11-09. The earlier `377 passed in 15.90s` count is historical worker evidence.
 - `COMPLETED`: fixture-backed OpenAPI/AsyncAPI discovery and the loopback-only `ELASTIC_A2A_TCK_FIXTURE=1` profile; targeted official artifact/message TCK checks: `5 passed` over HTTP+JSON.
 - `COMPLETED`: current loopback HTTP gateway/protocol evidence: `52 passed in 3.79s`, exit 0, using real `serve_forever` threads and `urllib.request.urlopen`. This proves local HTTP behavior only; it does not prove remote/provider/Supabase/production behavior.
 - `COMPLETED`: linked Supabase runtime smoke passed in the DSN-bearing PowerShell session: restart persistence, task recovery, cleanup, and application-path cross-tenant denial passed.
 - `BLOCKED`: normal-runtime official A2A TCK is not production conformance (`46 passed, 27 failed, 41 skipped`; `54/75` HTTP+JSON checks executed). Remaining failures are fixture-dependent outputs and TCK expectation mismatches.
-- `BLOCKED`: production authentication because no named identity-provider/token/tenant contract exists. The existing bearer adapter and non-loopback fail-closed boundary are verified locally.
+- `COMPLETED locally / UNVERIFIED live`: Supabase JWT authentication is implemented in `apps/gateway/auth.py` with issuer, audience, JWKS, expiry, subject, server-controlled tenant, scopes, and revocation-hook checks; identity propagates into chat session/task ownership. A real user login/revocation exercise remains unrun.
 - `UNVERIFIED`: production deployment, browser native interoperability, live external A2AChat/provider conformance, and provider-signed receipts.
 - `COMPLETED`: direct restricted-role PostgreSQL `INSERT` rejection was verified against the linked Supabase target: temporary non-superuser `elastic_runtime_smoke` (member of `elastic_runtime`, `rolbypassrls=false`) received `ERROR: new row violates row-level security policy for table "chat_sessions"`; the temporary role was then removed and confirmed absent.
 - `UNVERIFIED`: live restart-safe cancellation and rollback acceptance. The Supabase smoke proves the application-path restart/persistence/cross-tenant scenario; cancellation and rollback remain separate criteria.
@@ -65,7 +65,7 @@ These are worker-reported existing outputs, not rerun during this checkpoint:
 - `COMPLETED` — Sub Agent 26 // Retention Contract: changed `db/migrations/test_migration_contract.py`; exact output `8 passed in 0.06s`; `git diff --check` passed. This is static contract coverage only; SQL retention deletion enforcement remains absent.
 - `UNVERIFIED` — prior aggregate `52 passed`, `403 passed`, and `88 passed` claims: no persisted command transcript or newly rerun output was supplied in this checkpoint, so they remain historical claims rather than fresh evidence for current edits.
 
-- [x] Current nested full-repository test result is green: `620 passed in 23.78s`, exit 0, on 2026-11-09. The prior `403 passed, 32 socket failures` report from `WinError 10013` is historical and does not describe this current run.
+- [x] Current nested full-repository test result is green: `624 passed in 10.51s`, exit 0, on 2026-11-09. The prior `403 passed, 32 socket failures` report from `WinError 10013` is historical and does not describe this current run.
 - [x] Non-HTTP current-batch suites are independently green: `88 passed`; dashboard suite independently green: `7 passed`.
 - [ ] Durable database target and migration authority are identified.
 - [ ] Migration 004/005 passes live tenant/RLS, retention, rollback, and SQL/Python contract gates.
@@ -94,11 +94,11 @@ These are worker-reported existing outputs, not rerun during this checkpoint:
 
 ## Checkpoint conclusion
 
-- `COMPLETED`: local migration/RLS contract and application-path tests. Current nested full suite `620 passed in 23.78s`, exit 0.
+- `COMPLETED`: local migration/RLS contract and application-path tests. Current nested full suite `624 passed in 10.51s`, exit 0.
 - `COMPLETED`: linked Supabase runtime smoke passed for restart persistence, task recovery, cleanup, and application-path cross-tenant denial.
 - `COMPLETED`: direct restricted-role `INSERT` rejection passed against the linked Supabase target and the temporary role was removed.
 - `UNVERIFIED`: restart-safe cancellation and rollback acceptance remain unexecuted.
-- `UNVERIFIED`: the current smoke runner has no cancellation assertion; restart-safe cancellation, rollback acceptance, real provider-signed receipt authority, production authentication, deployment, and native/public browser WebMCP proof remain open. Local/synthetic provider checks and one read-only external-provider path do not establish provider authority.
+- `UNVERIFIED`: live restart-safe cancellation, rollback acceptance, real provider-signed receipt authority, real Supabase login/revocation exercise, deployment, and native/public browser WebMCP proof remain open. Local/synthetic provider checks and one read-only external-provider path do not establish provider authority.
 - Smallest remaining local/live gate: cancellation and rollback require a cancellable task and a disposable database or branch. External authentication, provider authority, deployment, and public/native browser proof remain separately gated. Do not apply destructive rollback checks to the shared `elastic_web` database. Do not call this production-ready.
 
 ## Final handoff test

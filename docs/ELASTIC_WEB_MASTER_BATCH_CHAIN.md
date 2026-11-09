@@ -77,7 +77,7 @@ cancellation and rollback acceptance remain separate unexecuted criteria.
 ### B8 - End-to-end proof
 
 `PASS - local suite; live proof open`. The UCP catalog path uses the existing
-registry and executor. Current nested full suite: `620 passed in 23.78s`, exit 0.
+registry and executor. Current nested full suite: `624 passed in 10.51s`, exit 0.
 The earlier `377 passed` count is historical worker evidence. Scenario D,
 payment, and live deployment proof were not run. The linked Supabase runtime
 smoke separately passed restart persistence, task recovery, cleanup, and
@@ -92,8 +92,9 @@ adapter. The evaluator requires
 verified completion criteria and the recovery contract fails closed for uncertain
 irreversible operations, duplicate/conflicting events, delayed terminal events,
 and unconfirmed cancellation. Gateway and durable-worker integration remain open.
-The current Supabase smoke runner contains no `smoke-cancel` assertion, so the
-earlier stale cancellation output is not current evidence.
+The current Supabase smoke runner contains a submitted-task cancellation and
+post-restart recovery assertion; live execution remains blocked by the absent
+DSN in the Codex process.
 
 Current-batch evidence: Sub Agent 23 reported `5 passed in 0.38s` for the
 idempotency contract. Sub Agent 25 reported `9 passed in 0.44s` for provider
@@ -144,9 +145,9 @@ fresh checkpoint evidence because no persisted command transcript was available.
 The earlier `377 passed in 15.90s` count and any earlier `52 passed` aggregate
 are historical worker evidence; the current loopback HTTP result is the separate
 `52 passed in 3.79s` gateway/protocol run recorded above. Current independent
-nested verification is `620 passed in 23.78s`, exit 0; it does not close
+nested verification is `624 passed in 10.51s`, exit 0; it does not close
 restart-safe cancellation, rollback, real provider-signed receipt authority,
-production authentication, browser interoperability, or deployment criteria.
+real Supabase login/revocation exercise, browser interoperability, or deployment criteria.
 The repository is not production-ready.
 
 ## Required handoff format for every batch

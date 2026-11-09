@@ -22,7 +22,7 @@ this document or in chat.
 
 | Gate | What is missing | What you need to provide or approve | What the master will do next |
 |---|---|---|---|
-| Production authentication | A trusted identity contract | Name the IdP and provide the contract: issuer, audience/resource, signing-key discovery, required claims for tenant/principal, expiry/revocation source, scopes, and approval policy. Configure secrets through the runtime environment, never chat. | Implement the provider-specific validator, tenant/principal mapping, negative/positive matrix, and production binding gate. |
+| Production authentication | Live user login/revocation exercise | Supabase Auth is now the selected IdP. The local adapter requires issuer, audience, JWKS, `sub`, server-controlled tenant, scopes, expiry, and an optional revocation check; no secrets belong in chat. | Exercise one disposable Supabase Auth user through the gateway, then verify expiry/revocation and tenant ownership. |
 | Durable runtime smoke test | Restart-safe cancellation and rollback acceptance | The linked target is connected and the restart/persistence/cleanup/cross-tenant smoke passed. Direct restricted-role `INSERT` denial also passed with a temporary non-bypass role that was removed. The current runner has no `smoke-cancel` assertion. | Run cancellation persistence against a task that reaches a cancellable state, and run rollback only against a disposable database/branch; do not use the shared public schema. |
 | Normal-runtime A2A conformance | The official TCK expects fixture-provider outputs that the generic Elastic runtime does not generate | Choose one: accept the isolated fixture profile as test-only evidence, or authorize a named capability-backed conformance provider with artifact/message behavior. | If provider-backed, add generic capability mappings and rerun the normal TCK. Never add production message-ID hacks. |
 | External A2AChat interoperability | External endpoint, credentials, disclosure scope, and callback policy | Name the authorized A2AChat target and explicitly approve outbound disclosure/credentials/callback behavior. | Run a bounded read-only interoperability test; do not make A2AChat the execution or evidence authority. |
@@ -34,10 +34,10 @@ this document or in chat.
 ## Current verdict
 
 - Local engineering scope: `COMPLETED` for the implemented contract surface.
-- Current full-suite evidence: `620 passed in 23.78s`, exit 0, from `.venv/Scripts/python.exe -m pytest -q` in the nested Elastic repository (2026-11-09). The earlier `377 passed` worker count is historical evidence, not the current total.
+- Current full-suite evidence: `624 passed in 10.51s`, exit 0, from `.venv/Scripts/python.exe -m pytest -q` in the nested Elastic repository (2026-11-09). The earlier `377 passed` worker count is historical evidence, not the current total.
 - Current local HTTP evidence: `52 passed in 3.79s`, exit 0, from the gateway/protocol HTTP tests using real loopback server threads and `urllib.request.urlopen`.
 - Live database evidence: `PARTIAL`; restart/persistence/cleanup/application-path cross-tenant smoke and direct restricted-role `INSERT` rejection passed. Restart-safe cancellation and rollback acceptance remain unverified.
 - Normal runtime A2A TCK: `46 passed, 27 failed, 41 skipped`; not production conformance.
 - Provider evidence: local/synthetic receipt verification and one read-only external-provider path are verified; real provider-signed receipt authority remains blocked pending the provider trust contract.
-- Queue: `NOT_PRODUCTION_READY`; no ready local work is observable. Production authentication, external provider authority, deployment/browser proof, restart-safe cancellation, and rollback acceptance remain blocked or unverified.
+- Queue: `NOT_PRODUCTION_READY`; no ready local work is observable. Live Supabase login/revocation, external provider authority, deployment/browser proof, restart-safe cancellation, and rollback acceptance remain blocked or unverified.
 - No deployment, publication, external message, payment, or destructive migration was performed.
