@@ -54,6 +54,23 @@ const hermesAskTool = {
   },
 };
 
+const clientInstructions = [
+  "Use this server as a live Hermes bridge.",
+  "On a new connection: initialize, capture the MCP session ID, then call tools/list.",
+  "Send notifications/initialized after initialize when the client supports it, and preserve the session ID on later requests.",
+  "Use the /mcp path, not the tunnel root. Accept application/json or text/event-stream; this bridge emits one response event per POST.",
+  "When a session key is unknown, call conversations_list first; use its exact session_key with conversation_get or messages_read.",
+  "Read recent messages before sending a consequential reply. Treat truncated history as incomplete.",
+  "Use hermes.ask to submit a prompt to Hermes and wait for its generated answer.",
+  "Use messages_send only for an explicit outbound channel message; it does not ask Hermes for an answer.",
+  "Do not parallelize writes to the same conversation. Distinguish sent, received, and answered, and verify write results.",
+  "Use events_poll for bounded polling and events_wait for near-real-time delivery; advance after_cursor from the returned cursor.",
+  "Use attachments_fetch only with a message_id returned by messages_read.",
+  "Use permissions_list_open before permissions_respond; only respond to a known approval ID and decision.",
+  "Do not expose VEDA, KGS, or Hermes credentials in tool arguments or responses.",
+  "If the bridge restarts or a quick-tunnel URL changes, discard cached session state and initialize again.",
+].join(" ");
+
 const child = spawn(hermesBin, ["mcp-serve"], { stdio: ["pipe", "pipe", "pipe"] });
 const pending = new Map();
 let stderr = "";
@@ -158,7 +175,7 @@ const server = createServer(async (request, response) => {
       ? { "Mcp-Session-Id": randomUUID() }
       : {};
     if (message.method === "initialize" && result?.result) {
-      result.result.instructions = `${result.result.instructions || ""} Use this server as a live Hermes messaging bridge: list or retrieve the relevant conversation, read recent messages for context, then call messages_send when a reply is required. Wait for and use the tool result before responding.`.trim();
+      result.result.instructions = `${result.result.instructions || ""} ${clientInstructions}`.trim();
     }
     reply(response, 200, result, request, sessionHeaders);
   } catch (error) {

@@ -82,6 +82,10 @@ It submits the prompt to Hermes' existing local chat API and returns the
 generated answer. `messages_send` remains the outbound channel-message tool;
 it is not the prompt-to-Hermes path.
 
+The complete cross-client tool contract is in
+[`HERMES-MCP-TOOL-GUIDANCE.md`](./HERMES-MCP-TOOL-GUIDANCE.md). The bridge also
+includes the operational rules in its MCP initialization instructions.
+
 ## Security boundary
 
 - The bridge binds to loopback only.
