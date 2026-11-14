@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
@@ -57,22 +57,25 @@ function authorized(request) {
   return request.headers.authorization === `Bearer ${token}`;
 }
 
-function reply(response, status, body) {
+function reply(response, status, body, request = null, extraHeaders = {}) {
   if (status === 204) {
     response.writeHead(status);
     response.end();
     return;
   }
   const data = JSON.stringify(body);
+  const wantsEventStream = request?.headers.accept?.includes("text/event-stream");
   const headers = {
-    "Content-Type": "application/json",
+    "Content-Type": wantsEventStream ? "text/event-stream" : "application/json",
     "Cache-Control": "no-store",
     "Access-Control-Allow-Headers": "Authorization, Content-Type, MCP-Protocol-Version",
-    "Content-Length": Buffer.byteLength(data),
+    ...extraHeaders,
   };
   if (allowedOrigin) headers["Access-Control-Allow-Origin"] = allowedOrigin;
+  const payload = wantsEventStream ? `event: message\ndata: ${data}\n\n` : data;
+  headers["Content-Length"] = Buffer.byteLength(payload);
   response.writeHead(status, headers);
-  response.end(data);
+  response.end(payload);
 }
 
 const server = createServer(async (request, response) => {
@@ -99,10 +102,13 @@ const server = createServer(async (request, response) => {
     if (message.method.startsWith("notifications/")) return reply(response, 204);
     requestChain = requestChain.then(() => sendToHermes(message));
     const result = await requestChain;
+    const sessionHeaders = message.method === "initialize"
+      ? { "Mcp-Session-Id": randomUUID() }
+      : {};
     if (message.method === "initialize" && result?.result) {
       result.result.instructions = `${result.result.instructions || ""} Use this server as a live Hermes messaging bridge: list or retrieve the relevant conversation, read recent messages for context, then call messages_send when a reply is required. Wait for and use the tool result before responding.`.trim();
     }
-    reply(response, 200, result);
+    reply(response, 200, result, request, sessionHeaders);
   } catch (error) {
     reply(response, 502, { error: "Hermes MCP request failed" });
   }
