@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
@@ -9,6 +10,49 @@ const token = process.env.ELASTIC_HERMES_MCP_TOKEN || randomBytes(24).toString("
 const hermesBin = process.env.HERMES_BIN || "C:\\Users\\m_jor\\AppData\\Local\\hermes\\bin\\hermes.exe";
 const maxBodyBytes = 1024 * 1024;
 const allowedOrigin = process.env.ELASTIC_HERMES_MCP_ORIGIN || "";
+const hermesApiUrl = process.env.HERMES_API_URL || "http://127.0.0.1:8642/v1/chat/completions";
+const hermesApiModel = process.env.HERMES_API_MODEL || "hermes-agent";
+const hermesEnvPath = process.env.HERMES_ENV_PATH || "C:\\Users\\m_jor\\AppData\\Local\\hermes\\.env";
+
+function localEnvValue(name) {
+  try {
+    const line = readFileSync(hermesEnvPath, "utf8")
+      .split(/\r?\n/)
+      .find((entry) => new RegExp(`^\\s*${name}\\s*=`).test(entry));
+    return line?.split("=", 2)[1]?.trim().replace(/^['\"]|['\"]$/g, "") || "";
+  } catch {
+    return "";
+  }
+}
+
+async function askHermes(arguments_) {
+  const prompt = typeof arguments_?.prompt === "string" ? arguments_.prompt.trim() : "";
+  if (!prompt || prompt.length > 12000) throw new Error("prompt must be 1-12000 characters");
+  const apiKey = process.env.HERMES_API_SERVER_KEY || localEnvValue("API_SERVER_KEY");
+  if (!apiKey) throw new Error("Hermes API key is not configured");
+  const response = await fetch(hermesApiUrl, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: hermesApiModel, messages: [{ role: "user", content: prompt }], stream: false }),
+    signal: AbortSignal.timeout(60000),
+  });
+  if (!response.ok) throw new Error(`Hermes API returned ${response.status}`);
+  const payload = await response.json();
+  const answer = payload?.choices?.[0]?.message?.content;
+  if (typeof answer !== "string") throw new Error("Hermes API returned no answer");
+  return { content: [{ type: "text", text: answer }] };
+}
+
+const hermesAskTool = {
+  name: "hermes.ask",
+  description: "Submit a prompt to the local Hermes runtime and return its generated answer.",
+  inputSchema: {
+    type: "object",
+    properties: { prompt: { type: "string", description: "The message to send to Hermes." } },
+    required: ["prompt"],
+    additionalProperties: false,
+  },
+};
 
 const child = spawn(hermesBin, ["mcp-serve"], { stdio: ["pipe", "pipe", "pipe"] });
 const pending = new Map();
@@ -100,8 +144,16 @@ const server = createServer(async (request, response) => {
       return reply(response, 400, { error: "invalid JSON-RPC request" });
     }
     if (message.method.startsWith("notifications/")) return reply(response, 204);
-    requestChain = requestChain.then(() => sendToHermes(message));
+    requestChain = requestChain.catch(() => {}).then(async () => {
+      if (message.method === "tools/call" && message.params?.name === "hermes.ask") {
+        return { jsonrpc: "2.0", id: message.id, result: await askHermes(message.params.arguments) };
+      }
+      return sendToHermes(message);
+    });
     const result = await requestChain;
+    if (message.method === "tools/list" && result?.result?.tools && !result.result.tools.some((tool) => tool.name === hermesAskTool.name)) {
+      result.result.tools.push(hermesAskTool);
+    }
     const sessionHeaders = message.method === "initialize"
       ? { "Mcp-Session-Id": randomUUID() }
       : {};

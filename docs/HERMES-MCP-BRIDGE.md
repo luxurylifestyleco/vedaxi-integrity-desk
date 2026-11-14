@@ -69,6 +69,19 @@ conversation, read recent messages, and call `messages_send` when they need
 Hermes to respond. The bridge adds this guidance to the MCP initialization
 instructions.
 
+For direct agent-to-Hermes interaction, use the added `hermes.ask` tool:
+
+```json
+{
+  "name": "hermes.ask",
+  "arguments": { "prompt": "Reply with the requested answer." }
+}
+```
+
+It submits the prompt to Hermes' existing local chat API and returns the
+generated answer. `messages_send` remains the outbound channel-message tool;
+it is not the prompt-to-Hermes path.
+
 ## Security boundary
 
 - The bridge binds to loopback only.
