@@ -3,6 +3,9 @@
 This is the shared operating contract for Codex, Claude, Instinct, and any
 other MCP client connected to the Elastic Hermes bridge.
 
+The broader client target list and client-specific connection profiles are in
+[`HERMES-MCP-CLIENT-MATRIX.md`](./HERMES-MCP-CLIENT-MATRIX.md).
+
 ## Connection sequence
 
 1. Authenticate with the bearer token.
