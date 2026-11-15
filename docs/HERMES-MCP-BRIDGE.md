@@ -86,6 +86,9 @@ The complete cross-client tool contract is in
 [`HERMES-MCP-TOOL-GUIDANCE.md`](./HERMES-MCP-TOOL-GUIDANCE.md). The bridge also
 includes the operational rules in its MCP initialization instructions.
 
+For VDX Teams virtual deployment, use
+[`VDX-TEAMS-DEPLOYMENT-HANDOFF.md`](./VDX-TEAMS-DEPLOYMENT-HANDOFF.md).
+
 ## Security boundary
 
 - The bridge binds to loopback only.

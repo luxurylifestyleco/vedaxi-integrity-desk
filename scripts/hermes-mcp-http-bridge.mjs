@@ -114,6 +114,11 @@ function sendToHermes(message) {
   });
 }
 
+function forwardNotification(message) {
+  if (child.exitCode !== null || child.killed) return;
+  child.stdin.write(`${JSON.stringify(message)}\n`);
+}
+
 function authorized(request) {
   return request.headers.authorization === `Bearer ${token}`;
 }
@@ -160,7 +165,10 @@ const server = createServer(async (request, response) => {
     if (!message || typeof message !== "object" || message.jsonrpc !== "2.0" || typeof message.method !== "string") {
       return reply(response, 400, { error: "invalid JSON-RPC request" });
     }
-    if (message.method.startsWith("notifications/")) return reply(response, 204);
+    if (message.method.startsWith("notifications/")) {
+      forwardNotification(message);
+      return reply(response, 204);
+    }
     requestChain = requestChain.catch(() => {}).then(async () => {
       if (message.method === "tools/call" && message.params?.name === "hermes.ask") {
         return { jsonrpc: "2.0", id: message.id, result: await askHermes(message.params.arguments) };
