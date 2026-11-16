@@ -1,3 +1,5 @@
+This repo is the research-integrity desk; Elastic Web is luxurylifestyleco/vedaxi-elastic.
+
 # VEDAXI
 
 VEDAXI is a two-origin WebMCP research-integrity desk. A Paper publisher and an independent Video publisher expose bounded evidence tools. An agent may search evidence and request a discrepancy focus; only a human can confirm or reject that proposal. All research content is fictional fixture data.
